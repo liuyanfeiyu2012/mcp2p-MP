@@ -36,6 +36,10 @@ Page({
     imageExt: '.jpg?x-oss-process=style/348-225-scale3',
     displayDemo: true,
     needLogin: true, //判断进入这个页面的用户是否需要登录
+    videoList: ['https://p3.pstatp.com/large/131040001488de047292a.jpg', 'https://p3.pstatp.com/large/131040001488de047292a.jpg', 'https://p3.pstatp.com/large/131040001488de047292a.jpg',
+
+      'https://p3.pstatp.com/large/131040001488de047292a.jpg', 'https://p3.pstatp.com/large/131040001488de047292a.jpg',
+      'https://p3.pstatp.com/large/131040001488de047292a.jpg',]
   },
   onLoad:function(options){
     this.setData({
@@ -53,36 +57,46 @@ Page({
     }else{
       //首次加载查询
       var that = this;
-      if (!app.globalData.hasLogin) {
-        app.getUserInfo(function (res) {
-          if (!res || !res.openid){
-            return
-          }
-          console.log('login success!')
-          let _user = sdk.getSession()
-          that.setData({
-            userInfo: _user,
-            openid: _user.openid,
-            loginStatus: true,
-            faceUrl: _user.avatarUrl
-          });
-          console.log("image url:", sdk.HOST_MEDIAT_URL + '/trans_asr_img/')
-          that.doSelectWork();
-        }, function (err) {
-          console.log('login fail!')
-        })
-        // app.getUserOpenId(function (err, _openid) {
-        // });
-      }else{
-        let _userInfo = app.globalData.userInfo
-        that.setData({
-          userInfo: _userInfo,
-          openid: _userInfo.openid,
-          loginStatus: true,
-          faceUrl: _userInfo.avatarUrl
-        });
-        that.doSelectWork();
-      }
+      wx.getUserInfo({
+        success: res => {
+          app.globalData.userInfo = res.userInfo
+          this.setData({
+            userInfo: res.userInfo,
+            hasUserInfo: true,
+            loginStatus: true
+          })
+        }
+      })
+      // if (!app.globalData.hasLogin) {
+      //   app.getUserInfo(function (res) {
+      //     if (!res || !res.openid){
+      //       return
+      //     }
+      //     console.log('login success!')
+      //     let _user = sdk.getSession()
+      //     that.setData({
+      //       userInfo: _user,
+      //       openid: _user.openid,
+      //       loginStatus: true,
+      //       faceUrl: _user.avatarUrl
+      //     });
+      //     console.log("image url:", sdk.HOST_MEDIAT_URL + '/trans_asr_img/')
+      //     that.doSelectWork();
+      //   }, function (err) {
+      //     console.log('login fail!')
+      //   })
+      //   // app.getUserOpenId(function (err, _openid) {
+      //   // });
+      // }else{
+      //   let _userInfo = app.globalData.userInfo
+      //   that.setData({
+      //     userInfo: _userInfo,
+      //     openid: _userInfo.openid,
+      //     loginStatus: true,
+      //     faceUrl: _userInfo.avatarUrl
+      //   });
+      //   that.doSelectWork();
+      // }
     }
   },
   //关注点击和非关注点击
@@ -100,7 +114,7 @@ Page({
   onReady(){
     if (!this.data.displayDemo) {
       wx.setNavigationBarTitle({
-        title: "用户视频浏览",
+        title: "我的",
       })
     }
   },

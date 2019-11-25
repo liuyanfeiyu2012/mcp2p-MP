@@ -142,7 +142,7 @@ button[plain]{ border:0 }
   position: absolute;
   z-index: 10000;
   right: 5rpx;
-  top: 250rpx;
+  bottom: 120rpx;
   height: 300px;
   flex-direction: column;
 }
@@ -275,4 +275,21 @@ button[plain]{ border:0 }
   font-size: 14pt;
   font-family: FangSong;
   opacity:0.3;
+}
+
+.nav-wrap {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  color: #8b8e8c;
+  background-color: #141414;
+  display: flex;
+  align-items: center;
+  height: 105rpx;
+  z-index: 100;
+}
+
+.nav-item {
+  flex: 1;
+  text-align: center;
 }

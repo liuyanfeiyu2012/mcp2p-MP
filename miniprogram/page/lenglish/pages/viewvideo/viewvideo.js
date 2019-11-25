@@ -455,7 +455,7 @@ Page({
     var videoInfo = listVideo[that.data.videoIndex];
     var video = JSON.stringify(videoInfo);
     return {
-      title: "刷视频学外语分享",
+      title: "萌宠",
       path: "/page/lenglish/pages/index/index?shareInfo=" + video,
       imageUrl: videoInfo['poster'],
     }

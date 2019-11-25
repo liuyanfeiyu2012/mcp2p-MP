@@ -13,6 +13,7 @@ var video2local = function (callback, callend) {
     var _host = res['host']
     var _dir = res['dir']
     
+    debugger
     // 让用户选择一张图片
     wx.chooseVideo({
       sourceType: ['album'],

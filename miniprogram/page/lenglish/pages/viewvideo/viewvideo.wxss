@@ -142,7 +142,7 @@ button[plain]{ border:0 }
   position: absolute;
   z-index: 10000;
   right: 5rpx;
-  top: 250rpx;
+  bottom: 100rpx;
   height: 300px;
   flex-direction: column;
 }

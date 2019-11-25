@@ -1,22 +1,34 @@
-<!--index.wxml-->
-<view wx:if="{{loginStatus||!needLogin}}">
 
-  <view class="container">
+<view class="mine-wrap">
+  <view>
     <image src='{{userInfo.avatarUrl}}' class='face'></image>
     <label class='nickname'>{{ userInfo.nickName }}</label>
     <!-- 判断是否是自己 -->
      <!-- <button wx:if="{{needLogin}}" class="mini-btn" type="primary" size="mini" bindtap='uploadVideo'>上传作品</button> -->
   </view>
-
-  <view class='line'></view>
-  <view class='container-video'>
-    <view class='{{videoSelClass}}{{isSelectdWork}}' bindtap='doSelectWork'>作品列表</view>
-    <view hidden="{{!needLogin}}" class='{{videoSelClass}}{{isSelectdLike}}' bindtap='doSelectWait'>待发布作品</view>
+  <view class="info-data">
+    <view class="info-item">
+      0关注
+    </view>
+    <view class="info-item">
+      0粉丝
+    </view>
+    <view class="info-item">
+      0骨头
+    </view>
   </view>
 
-  <view class='container-video-list'></view>
+  <view class="video-wrap">
+    <view wx:for="{{videoList}}" wx:for-item="video" class="video-item" style="{{'background-image: url('+video+');'}}">
+    </view>
+  </view>
+
+
+  <!-- <view class='line'></view> -->
+
+  <!-- <view class='container-video-list'></view> -->
   <!-- 作品 -->
-  <view hidden='{{myWorkFalg}}'>
+  <!-- <view hidden='{{myWorkFalg}}'>
     <block wx:for="{{myVideoList}}" wx:for-item="item" wx:key="" >
       <image src='{{serverUrl}}{{item.key}}{{imageExt}}' class='videoImage' mode="aspectFill" >
         <cover-view class='icon-box'>
@@ -24,9 +36,9 @@
         </cover-view>
       </image>
     </block>
-  </view>
+  </view> -->
   <!-- 待发布作品 -->
-  <view hidden='{{!myWorkFalg}}'>
+  <!-- <view hidden='{{!myWorkFalg}}'>
     <block wx:for="{{waitVideoList}}" wx:for-item="item" wx:key="" >
       <image src='{{serverUrl}}{{item.key}}{{imageExt}}' class='videoImage' mode="aspectFill" >
         <cover-view class='icon-box'>
@@ -34,8 +46,5 @@
         </cover-view>
       </image>
     </block>
-  </view>
-</view>
-<view class="btn-center" wx:else>
-    <button type="primary" open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo" style='width:80%;' wx:if="{{canIUse}}">登录</button>
+  </view> -->
 </view>

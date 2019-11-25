@@ -121,15 +121,7 @@ Page({
         that.setData({
           url: downloadUrl
         })
-        // 调用接口处理
-        wx.showLoading({
-          title: '正在字幕分析!',
-          mask: true,
-        })
         
-        sdk.preAv(that.data.openid, downloadUrl, that.data.lang, function (res) {
-          console.log('服务器字幕分析正在处理', res)
-        })
         let _checkPoint = setInterval(that.checkSched, 5000);
         that.setData({
           checkPoint: _checkPoint

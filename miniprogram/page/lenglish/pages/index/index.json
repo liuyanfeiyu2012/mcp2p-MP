@@ -1,5 +1,5 @@
 {
-  "navigationBarTitleText": "刷视频学外语",
+  "navigationBarTitleText": "萌宠",
   "usingComponents": {
     "wux-popup": "../../../dist/popup/index",
     "wux-icon": "../../../dist/icon/index",

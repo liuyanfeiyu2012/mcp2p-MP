@@ -21,10 +21,10 @@ page {
 }
 
 .face {
-    width: 180rpx;
-    height: 180rpx;
-    border-radius: 50%;
+    width: 80rpx;
+    height: 80rpx;
     margin-top: 20px;
+    margin-left: 50rpx;
 }
 
 .nickname {
@@ -104,4 +104,37 @@ page {
   display: block;
   width: 100rpx;
   height: 100rpx;
+}
+.mine-wrap {
+  background-color: #110723;
+  height: 100%;
+  color: #fff;
+  position: absolute;
+  width: 100%;
+}
+
+.info-data {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+.info-item {
+  flex: 1;
+  height: 80rpx;
+}
+
+.video-item {
+  border: 1px solid #000;
+  flex: 0 0 33.33%;
+  height: 310rpx;
+  background-size: 100% 100%;
+  box-sizing: border-box;
+}
+
+.video-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-content: flex-start;
 }

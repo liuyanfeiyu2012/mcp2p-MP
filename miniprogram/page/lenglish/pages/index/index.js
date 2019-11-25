@@ -26,7 +26,16 @@ Page({
     showRowAnim: false,
     currentTranslateY: 0,
     touchStartingY: 0,
-    videos: [],
+    videos: [{
+      src: "https://aweme.snssdk.com/aweme/v1/playwm/?video_id=v0200faf0000bg5joco1ahq89k7ik9j0&line=0",
+      poster: "https://p3.pstatp.com/large/131040001488de047292a.jpg"
+    }, {
+      src: "https://aweme.snssdk.com/aweme/v1/playwm/?video_id=v0200fce0000bg36q72j2boojh1t030g&line=0",
+      poster: "https://p99.pstatp.com/large/12c5c0009891b32e947b7.jpg",
+    }, {
+      src: "https://aweme.snssdk.com/aweme/v1/playwm/?video_id=v0300fd10000bfrb9mlpimm72a92fsj0&line=0",
+      poster: "https://p99.pstatp.com/large/12246000525d4c87900e7.jpg"
+    }],
     videoIndex: 0,
     rowCurrent: 0,
     objectFit: "contain",
@@ -39,7 +48,7 @@ Page({
 
     commentsList: [],
     commentVisible: false,
-    placeholder: '有爱评论，说点儿好听的~',
+    placeholder: '赞美一下小可爱吧~',
     replyCommentContent: null,
     replyToOpenId: null,
     replyToNickName: null,
@@ -50,23 +59,6 @@ Page({
   },
   myevent: null,
   onLoad: function (options) {
-
-    // 处理首次使用引导页面的问题
-    let firstOpen = wx.getStorageSync("loadOpen")
-    console.log("是否首次打开本页面==", firstOpen)
-    if (firstOpen == undefined || firstOpen == '') { //根据缓存周期决定是否显示新手引导
-      console.log("首次打开本页面")
-      this.setData({
-        isTiptrue: true,
-        autoplay: false,
-        playState: false,
-      })
-    } else {
-      this.setData({
-        isTiptrue: false,
-        autoplay: true,
-      })
-    }
 
     //处理数据加载的问题
     var that = this;
@@ -107,7 +99,7 @@ Page({
         console.log('getUserByIds fail', err)
       })
 
-    } else if (share_param){
+    } else if (share_param) {
       //处理分享逻辑
       var _video = JSON.parse(share_param)
       that.setData({
@@ -118,22 +110,22 @@ Page({
         console.log("share init load data end", res)
       })
       that.bindEvent()
-    }else {
+    } else {
       var that = this;
       that.loadData(0, function (res) {
         console.log("init load data end", res)
       })
       that.bindEvent()
     }
-  
+
   },
-  viewDemo(e){
+  viewDemo(e) {
     let demoindex = e.currentTarget.dataset.demoindex
     wx.navigateTo({
-      url: '/page/lenglish/pages/demo/demo?index='+demoindex,
+      url: '/page/lenglish/pages/demo/demo?index=' + demoindex,
     })
   },
-  bindEvent(){
+  bindEvent() {
     // 滑动
     this.videoChange = throttle(this.touchEndHandler, 100)
     if (this.data.mode == 'index') {
@@ -192,27 +184,27 @@ Page({
       }, 490)
     })
   },
-  loadData(status, callback){
+  loadData(status, callback) {
     var that = this
-    if(this.data.mode == 'my'){
+    if (this.data.mode == 'my') {
       console.log('我的视频数据暂时通过参数传递，所以不加载。')
       return
     }
     sdk.listPidAv(function (res) {
       let videoList = res.data
-      if (videoList){
+      if (videoList) {
         let ids = []
-        videoList.map(function(value, index){
+        videoList.map(function (value, index) {
           value = that.filterSubject(value)
           ids.push(value['id'])
         })
         //同时获取用户信息
         sdk.getUserByIds(ids, function (userList) {
 
-          videoList.map(function(value, index){
-            if (userList){
-              userList.map(function(value2, index2){
-                if (value['id'] == value2['openid']){
+          videoList.map(function (value, index) {
+            if (userList) {
+              userList.map(function (value2, index2) {
+                if (value['id'] == value2['openid']) {
                   value['userInfo'] = value2
                 }
               })
@@ -240,13 +232,13 @@ Page({
           callback(that.data.videos)
         })
       }
-      
+
     })
   },
-  goUser(e){
+  goUser(e) {
     let userid = e.currentTarget.dataset.openid
     console.log('userid', userid)
-    if (!userid){
+    if (!userid) {
       return
     }
     sdk.getUserByIds([userid], function (userList) {
@@ -257,7 +249,7 @@ Page({
           _userInfo = item
         }
       })
-      if (_userInfo){
+      if (_userInfo) {
         wx.navigateTo({
           url: '/page/lenglish/pages/mine/mine?userInfo=' + JSON.stringify(_userInfo),
         })
@@ -266,25 +258,25 @@ Page({
       console.log('getUserByIds fail', err)
     })
   },
-  goUserHome(e){
+  goUserHome(e) {
     //this.pauseVideo()
     let userid = e.currentTarget.dataset.openid
     console.log('userid', userid)
     let videoList = this.data.videos
     let findUserFlag = false
     let params = null
-    videoList.map(function(value, index){
+    videoList.map(function (value, index) {
       console.log('openid', value['id'])
-      if (value['id'] == userid){
+      if (value['id'] == userid) {
         params = JSON.stringify(value['userInfo'])
         findUserFlag = true
       }
     })
-    if (findUserFlag){
+    if (findUserFlag) {
       wx.navigateTo({
         url: '/page/lenglish/pages/mine/mine?userInfo=' + params,
       })
-    }else{
+    } else {
       wx.showToast({
         title: '没有找到用户!',
         icon: 'loading'
@@ -299,7 +291,7 @@ Page({
         icon: 'loading'
       })
       this.goMy()
-    }else{
+    } else {
       var that = this
       var listVideo = that.data.videos
       var subject = listVideo[that.data.videoIndex];
@@ -329,7 +321,7 @@ Page({
       var listVideo = that.data.videos
       let subject = listVideo[that.data.videoIndex]
       var id = md5util.hexMD5(subject['src'])
-      sdk.delLike(id, function(res){
+      sdk.delLike(id, function (res) {
         listVideo.map(function (value, index) {
           if (index == that.data.videoIndex) {
             value['like'] = false
@@ -342,17 +334,17 @@ Page({
       })
     }
   },
-  talk: function(e){
+  talk: function (e) {
     //设置输入框的焦点,重置数据.
     this.setData({
       commentVisible: true,
-      commentEnd:false,
-      commentsList:[],
+      commentEnd: false,
+      commentsList: [],
     });
     this.commentPage = 1;
     this.loadComment()
   },
-  closeTalk: function(e){
+  closeTalk: function (e) {
     this.setData({
       commentVisible: false
     });
@@ -378,7 +370,7 @@ Page({
         icon: 'loading'
       })
       this.goMy()
-    }else{
+    } else {
       var content = e.detail.value;
       wx.showLoading({
         title: '发表中,请稍等...',
@@ -420,12 +412,12 @@ Page({
     }
   },
   commentPage: 1,
-  loadComment: function(){
+  loadComment: function () {
     console.log('loadComment')
     this.getCommentsList(this.commentPage)
   },
   getCommentsList: function (page) {
-    if (this.data.commentEnd){
+    if (this.data.commentEnd) {
       return
     }
     let video = this.data.videos[this.data.videoIndex]
@@ -434,26 +426,26 @@ Page({
     wx.showLoading({
       title: '加载数据...',
     })
-    sdk.listComment(id, page, function(res){
+    sdk.listComment(id, page, function (res) {
       console.log('listComment', res)
-      if (res && res.length > 0){
+      if (res && res.length > 0) {
         let _listComment = that.data.commentsList
-        if (_listComment){
+        if (_listComment) {
           that.setData({
             commentsList: _listComment.concat(res)
           })
         }
         that.commentPage += 1
-      }else{
+      } else {
         that.setData({
           commentEnd: true,
         })
       }
-    }, function end(res){
+    }, function end(res) {
       wx.hideLoading()
     })
   },
-  shareMe: function(e){
+  shareMe: function (e) {
     console.log('click share')
   },
   //分享按钮
@@ -463,15 +455,23 @@ Page({
     var videoInfo = listVideo[that.data.videoIndex];
     var video = JSON.stringify(videoInfo);
     return {
-      title: "刷视频学外语分享",
+      title: "萌宠",
       path: "/page/lenglish/pages/index/index?shareInfo=" + video,
       imageUrl: videoInfo['poster'],
     }
   },
   apply() {
     //this.pauseVideo()
-    wx.navigateTo({
-      url: '/page/lenglish/pages/add/add',
+    // wx.navigateTo({
+    //   url: '/page/lenglish/pages/add/add',
+    // })
+    wx.chooseVideo({
+      sourceType: ['album'],
+      maxDuration: 60,
+      camera: 'back',
+      success(res) {
+        console.log(res.tempFilePath)
+      }
     })
   },
   goHome() {
@@ -486,7 +486,7 @@ Page({
     })
   },
   bindplay() {
-    console.log('--- video play ---', this.data.playState, 
+    console.log('--- video play ---', this.data.playState,
       this.data.animationShow, this.data.playError)
     this.setData({
       playError: false,
@@ -502,7 +502,7 @@ Page({
     let _videos = this.data.videos
     let _video = _videos[this.data.videoIndex]
     let _src = _video['src']
-    if (this.data.rowCurrent == 1 && _src.indexOf('_dub.')!=-1){
+    if (this.data.rowCurrent == 1 && _src.indexOf('_dub.') != -1) {
       _src = _src.replace('_dub', '')
       _video['src'] = _src
       _videos[this.data.videoIndex] = _video
@@ -512,7 +512,7 @@ Page({
     }
   },
   bindtimeupdate(e) {
-    let percent = (e.detail.currentTime / e.detail.duration)*100
+    let percent = (e.detail.currentTime / e.detail.duration) * 100
     this.setData({
       percent: percent.toFixed(2)
     })
@@ -527,7 +527,7 @@ Page({
       if (_subject['lang'] == 'en') {
         _subject['zh_src'] = that.data.serverUrl + _subject['key'] + '_zh_dub.' + suffix
         _subject['en_src'] = that.data.serverUrl + _subject['key'] + '_en.' + suffix
-      }else{
+      } else {
         _subject['en_src'] = that.data.serverUrl + _subject['key'] + '_en_dub.' + suffix
         _subject['zh_src'] = that.data.serverUrl + _subject['key'] + '_zh.' + suffix
       }
@@ -538,9 +538,9 @@ Page({
         _subject['src'] = _subject['zh_src']
       }
       //判定是否点击过喜欢
-      if(true){
+      if (true) {
         let id = md5util.hexMD5(_subject['src'])
-        sdk.isLike(id, function(res){
+        sdk.isLike(id, function (res) {
           _subject['like'] = res
         })
       }
@@ -558,7 +558,7 @@ Page({
       duration: 200,
       transformOrigin: '0 0 0'
     });
-    if (this.data.videoIndex > 0){
+    if (this.data.videoIndex > 0) {
       console.log('onReady:', -this.data.videoIndex * windowHeight)
       //初始化动画所在位置
       this.animation.translateY(-this.data.videoIndex * windowHeight).step()
@@ -576,7 +576,7 @@ Page({
     let touchStartingY = this.data.touchStartingY
     let deltaY = e.changedTouches[0].clientY - touchStartingY
     console.log('deltaY ', deltaY)
-    if (deltaY > (windowHeight-51)){
+    if (deltaY > (windowHeight - 51)) {
       return
     }
     console.log('changePlayStatus')
@@ -613,10 +613,10 @@ Page({
     let touchStartingY = this.data.touchStartingY
     let deltaY = e.changedTouches[0].clientY - touchStartingY
     let that = this
-    console.log('deltaY ',deltaY)
+    console.log('deltaY ', deltaY)
 
     let index = this.data.videoIndex
-    this.getDirect(start, e.changedTouches[0],function(){
+    this.getDirect(start, e.changedTouches[0], function () {
       console.log('left2right', that.data.rowCurrent)
       let _rowCurrent = that.data.rowCurrent
       if (_rowCurrent <= 0) {
@@ -642,11 +642,11 @@ Page({
         })
       })
       // that.switch2right()
-      
-    }, function(){
+
+    }, function () {
       console.log('right2left', that.data.rowCurrent)
       let _rowCurrent = that.data.rowCurrent
-      if (_rowCurrent>=2){
+      if (_rowCurrent >= 2) {
         wx.showToast({
           title: '没有更多数据',
           icon: 'loading',
@@ -670,8 +670,8 @@ Page({
       })
 
       //that.switch2left()
-      
-    }, function(){
+
+    }, function () {
       console.log('top2bottom', that.data.rowCurrent)
       console.log('top2bottom', index)
       // 更早地设置 animationShow
@@ -694,17 +694,17 @@ Page({
             })
           })
         })
-      }else{
+      } else {
         wx.showToast({
           title: '没有更多数据',
           icon: 'loading',
           duration: 500
         })
       }
-    }, function(){
+    }, function () {
       console.log('bottom2top', that.data.rowCurrent)
       console.log('bottom2top')
-      if (index !== (that.data.videos.length - 1)){
+      if (index !== (that.data.videos.length - 1)) {
         that.setData({
           animationShow: true,
           czindex: 9999,
@@ -723,8 +723,8 @@ Page({
             })
           })
           let diff = that.data.videos.length - index
-          if (diff <= 3){
-            that.loadData(1, function(res){
+          if (diff <= 3) {
+            that.loadData(1, function (res) {
               console.log('load more data end', res)
             })
           }
@@ -738,7 +738,7 @@ Page({
       }
     });
   },
-  create2Anim(num){
+  create2Anim(num) {
     this._animation.translateX(num).step()
 
     return Promise.resolve({
@@ -752,10 +752,10 @@ Page({
     let currentTranslateY = this.data.currentTranslateY
     console.log('direction ', direction)
     console.log('index ', index)
-    
+
     // 更新 videoIndex
     index += direction
-    currentTranslateY += -direction*windowHeight
+    currentTranslateY += -direction * windowHeight
     console.log('touchStartingY: ', this.data.touchStartingY)
     console.log('currentTranslateY: ', currentTranslateY)
     this.animation.translateY(currentTranslateY).step()
@@ -806,9 +806,9 @@ Page({
     let videoList = this.data.videos
     let _subject = videoList[this.data.videoIndex]
     if (_rowCurrent == 0) {
-      if (_subject['lang'] == 'en'){
+      if (_subject['lang'] == 'en') {
         _subject['src'] = _subject['en_src']
-      }else{
+      } else {
         _subject['src'] = _subject['zh_src']
       }
     }
@@ -856,7 +856,7 @@ Page({
     })
   }
 })
-function throttle (fn, delay) {
+function throttle(fn, delay) {
   var timer = null;
   return function () {
     var context = this, args = arguments;
