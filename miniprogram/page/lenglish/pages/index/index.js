@@ -69,13 +69,13 @@ Page({
     current = parseInt(current)
     var that = this;
     wx.request({
-      url: 'http://www.mengchongp2p.online/app/video/list',
+      url: 'https://www.mengchongp2p.online/app/video/list',
       method: 'get',
       header: {
         'Content-Type': 'application/json'
       },
       success: function (res) {//这里写调用接口成功之后所运行的函数
-        console.log(res.data);//调出来的数据在控制台显示，方便查看
+        // console.log(res.data);//调出来的数据在控制台显示，方便查看
         that.setData({
           videos: res.data.result,
           videoIndex: 0,
@@ -642,55 +642,35 @@ Page({
     let index = this.data.videoIndex
     this.getDirect(start, e.changedTouches[0], function () {
       console.log('left2right', that.data.rowCurrent)
-      let _rowCurrent = that.data.rowCurrent
-      if (_rowCurrent <= 0) {
-        wx.showToast({
-          title: '没有更多数据',
-          icon: 'loading',
-          duration: 500
-        })
-        return
-      }
-      that.setData({
-        animationShow: false,
-        rzindex: 9999,
-        showRowAnim: true
-      }, () => {
-        console.log('横向 切换')
-        that.create2Anim(-windowWidth * (_rowCurrent - 1)).then((res) => {
-          that.setData({
-            anim: that._animation.export(),
-          }, () => {
-            that.myevent.emit('updateVideoRIndex', -1)
-          })
-        })
-      })
+      // let _rowCurrent = that.data.rowCurrent
+      // if (_rowCurrent <= 0) {
+      //   wx.showToast({
+      //     title: '没有更多数据',
+      //     icon: 'loading',
+      //     duration: 500
+      //   })
+      //   return
+      // }
+      // that.setData({
+      //   animationShow: false,
+      //   rzindex: 9999,
+      //   showRowAnim: true
+      // }, () => {
+      //   console.log('横向 切换')
+      //   that.create2Anim(-windowWidth * (_rowCurrent - 1)).then((res) => {
+      //     that.setData({
+      //       anim: that._animation.export(),
+      //     }, () => {
+      //       that.myevent.emit('updateVideoRIndex', -1)
+      //     })
+      //   })
+      // })
       // that.switch2right()
 
     }, function () {
       console.log('right2left', that.data.rowCurrent)
-      let _rowCurrent = that.data.rowCurrent
-      if (_rowCurrent >= 2) {
-        wx.showToast({
-          title: '没有更多数据',
-          icon: 'loading',
-          duration: 500
-        })
-        return
-      }
-      that.setData({
-        animationShow: false,
-        rzindex: 9999,
-        showRowAnim: true
-      }, () => {
-        console.log('横向 切换')
-        that.create2Anim(-windowWidth * (_rowCurrent + 1)).then((res) => {
-          that.setData({
-            anim: that._animation.export(),
-          }, () => {
-            that.myevent.emit('updateVideoRIndex', 1)
-          })
-        })
+      wx.navigateTo({
+        url: '/page/lenglish/pages/mine/mine',
       })
 
       //that.switch2left()

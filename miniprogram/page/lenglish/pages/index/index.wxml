@@ -25,18 +25,21 @@
   </video>
   <!-- 右侧区域  -->
   <view class="tools">
-    <view>
+    <view class="btn-contain">
       <image class="userinfo-avatar" catchtap="goUserHome" src="{{videos[videoIndex].userInfo.avatarUrl}}" data-openid="{{videos[videoIndex].userInfo.openid}}"></image>
     </view>
-    <view>
+    <view class="btn-contain">
       <image wx:if="{{videos[videoIndex].like}}" class="icon2 right-icon" src='/image/like_red.png' catchtap='unlike'>取消喜欢</image>
       <image wx:if="{{!videos[videoIndex].like}}" class="icon2 right-icon" src='/image/like.png' catchtap='like'>喜欢</image>
+      <view>21</view>
     </view>
-    <view>
+    <view class="btn-contain">
       <image class="icon2 right-icon" src='/image/talk.png' catchtap='talk'>评论</image>
+      <view>21</view>
     </view>
-    <view>
+    <view class="btn-contain">
       <button open-type='share' class="share" plain='true' catchtap="shareMe"></button>
+      <view>21</view>
     </view>
   </view>
   <image class="play-btn" wx:if="{{(!playState)||playError}}" src="../../../../image/play.png"></image>
@@ -68,7 +71,7 @@
     本月
   </view>
   <view class="nav-item" catchtap="goMy">
-    我
+    我的
   </view>
 </view>
 </view>

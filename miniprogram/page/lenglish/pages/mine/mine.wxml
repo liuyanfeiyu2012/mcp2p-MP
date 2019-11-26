@@ -1,20 +1,19 @@
-
 <view class="mine-wrap">
-  <view>
+  <view class="user-info">
     <image src='{{userInfo.avatarUrl}}' class='face'></image>
     <label class='nickname'>{{ userInfo.nickName }}</label>
     <!-- 判断是否是自己 -->
-     <!-- <button wx:if="{{needLogin}}" class="mini-btn" type="primary" size="mini" bindtap='uploadVideo'>上传作品</button> -->
+    <!-- <button wx:if="{{needLogin}}" class="mini-btn" type="primary" size="mini" bindtap='uploadVideo'>上传作品</button> -->
   </view>
   <view class="info-data">
     <view class="info-item">
-      0关注
+      <text class="num">12</text>关注
     </view>
     <view class="info-item">
-      0粉丝
+      <text class="num">12</text>粉丝
     </view>
     <view class="info-item">
-      0骨头
+      <text class="num">12</text>骨头
     </view>
   </view>
 
