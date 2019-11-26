@@ -1,7 +1,9 @@
 <view class="mine-wrap">
   <view class="user-info">
-    <image src='{{userInfo.avatarUrl}}' class='face'></image>
-    <label class='nickname'>{{ userInfo.nickName }}</label>
+    
+    <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo">登录</button>
+    <image wx:else src='{{userInfo.avatarUrl}}' class='face'></image>
+    <!-- <label wx:else class='nickname'>{{ userInfo.nickName }}</label> -->
     <!-- 判断是否是自己 -->
     <!-- <button wx:if="{{needLogin}}" class="mini-btn" type="primary" size="mini" bindtap='uploadVideo'>上传作品</button> -->
   </view>

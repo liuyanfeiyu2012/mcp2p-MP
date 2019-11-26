@@ -6,28 +6,28 @@ const app = getApp()
 Page({
   data: {
     faceUrl: '/image/noneface.png',
-    isMe:true,
-    isFollow:false,
+    isMe: true,
+    isFollow: false,
 
-    isSelectdWork:"video-info-selected",
-    isSelectdLike:"",
-    isSelectdFollow:"",
+    isSelectdWork: "video-info-selected",
+    isSelectdLike: "",
+    isSelectdFollow: "",
     // 作品
-    myVideoList:[],
-    myVideoPage:1,
-    myVideoTotal:1,
-   //收藏
-    waitVideoList:[],
-    waitVideoPage:1,
-    waitVideoTotal:1,
+    myVideoList: [],
+    myVideoPage: 1,
+    myVideoTotal: 1,
+    //收藏
+    waitVideoList: [],
+    waitVideoPage: 1,
+    waitVideoTotal: 1,
     // 关注
-    followVideoList:[],
-    followVideoPage:1,
-    followVideoTotal:1,
+    followVideoList: [],
+    followVideoPage: 1,
+    followVideoTotal: 1,
     //列表展示
-    myWorkFalg:false,
-    myLikesFalg:true,
-    myFollowFalg:true,
+    myWorkFalg: false,
+    myLikesFalg: true,
+    myFollowFalg: true,
 
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
     loginStatus: false,
@@ -39,86 +39,132 @@ Page({
     videoList: ['https://p3.pstatp.com/large/131040001488de047292a.jpg', 'https://p3.pstatp.com/large/131040001488de047292a.jpg', 'https://p3.pstatp.com/large/131040001488de047292a.jpg',
 
       'https://p3.pstatp.com/large/131040001488de047292a.jpg', 'https://p3.pstatp.com/large/131040001488de047292a.jpg',
-      'https://p3.pstatp.com/large/131040001488de047292a.jpg',]
+      'https://p3.pstatp.com/large/131040001488de047292a.jpg',
+    ],
+    userInfo: {},
+    hasUserInfo: false,
+    canIUse: wx.canIUse('button.open-type.getUserInfo')
   },
-  onLoad:function(options){
-    this.setData({
-      displayDemo: app.globalData.displayDemo
-    })
-    let userInfoStr = options.userInfo
-    if (userInfoStr){
-      let _userInfo = JSON.parse(userInfoStr)
+  onLoad: function (options) {
+    // this.setData({
+    //   displayDemo: app.globalData.displayDemo
+    // })
+    // let userInfoStr = options.userInfo
+    // if (userInfoStr) {
+    //   let _userInfo = JSON.parse(userInfoStr)
+    //   this.setData({
+    //     needLogin: false,
+    //     userInfo: _userInfo,
+    //     openid: _userInfo.openid,
+    //   })
+    //   this.doSelectWork();
+    // } else {
+    //   //首次加载查询
+    //   var that = this;
+    //   if (!app.globalData.hasLogin) {
+    //     wx.getUserInfo(function (res) {
+    //       if (!res || !res.openid) {
+    //         return
+    //       }
+    //       console.log('login success!')
+    //       let _user = sdk.getSession()
+    //       that.setData({
+    //         userInfo: _user,
+    //         openid: _user.openid,
+    //         loginStatus: true,
+    //         faceUrl: _user.avatarUrl
+    //       });
+    //       console.log("image url:", sdk.HOST_MEDIAT_URL + '/trans_asr_img/')
+    //       that.doSelectWork();
+    //     }, function (err) {
+    //       console.log('login fail!')
+    //     })
+    //     // app.getUserOpenId(function (err, _openid) {
+    //     // });
+    //   } else {
+    //     let _userInfo = app.globalData.userInfo
+    //     that.setData({
+    //       userInfo: _userInfo,
+    //       openid: _userInfo.openid,
+    //       loginStatus: true,
+    //       faceUrl: _userInfo.avatarUrl
+    //     });
+    //     that.doSelectWork();
+    //   }
+    // }
+    if (app.globalData.userInfo) {
       this.setData({
-        needLogin: false,
-        userInfo: _userInfo,
-        openid: _userInfo.openid,
+        userInfo: app.globalData.userInfo,
+        hasUserInfo: true
       })
-      this.doSelectWork();
-    }else{
-      //首次加载查询
-      var that = this;
+    } else if (this.data.canIUse) {
+      // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
+      // 所以此处加入 callback 以防止这种情况
+      app.userInfoReadyCallback = res => {
+        this.setData({
+          userInfo: res.userInfo,
+          hasUserInfo: true
+        })
+      }
+    } else {
+      // 在没有 open-type=getUserInfo 版本的兼容处理
       wx.getUserInfo({
         success: res => {
           app.globalData.userInfo = res.userInfo
           this.setData({
             userInfo: res.userInfo,
-            hasUserInfo: true,
-            loginStatus: true
+            hasUserInfo: true
           })
         }
       })
-      // if (!app.globalData.hasLogin) {
-      //   app.getUserInfo(function (res) {
-      //     if (!res || !res.openid){
-      //       return
-      //     }
-      //     console.log('login success!')
-      //     let _user = sdk.getSession()
-      //     that.setData({
-      //       userInfo: _user,
-      //       openid: _user.openid,
-      //       loginStatus: true,
-      //       faceUrl: _user.avatarUrl
-      //     });
-      //     console.log("image url:", sdk.HOST_MEDIAT_URL + '/trans_asr_img/')
-      //     that.doSelectWork();
-      //   }, function (err) {
-      //     console.log('login fail!')
-      //   })
-      //   // app.getUserOpenId(function (err, _openid) {
-      //   // });
-      // }else{
-      //   let _userInfo = app.globalData.userInfo
-      //   that.setData({
-      //     userInfo: _userInfo,
-      //     openid: _userInfo.openid,
-      //     loginStatus: true,
-      //     faceUrl: _userInfo.avatarUrl
-      //   });
-      //   that.doSelectWork();
-      // }
     }
   },
   //关注点击和非关注点击
-  followMe:function(e){
-     
+  followMe: function (e) {
+
+  },
+  getUserInfo: function (e) {
+    console.log(e)
+    app.globalData.userInfo = e.detail.userInfo
+    this.setData({
+      userInfo: e.detail.userInfo,
+      hasUserInfo: true
+    })
+  },
+  loadList: function () {
+    wx.request({
+      url: 'https://www.mengchongp2p.online/app/customer/centre',
+      method: 'post',
+      header: {
+        'Content-Type': 'application/json'
+      },
+      data: {
+        openId: '10006'
+      },
+      success: function (res) { //这里写调用接口成功之后所运行的函数
+        console.log(res)
+      },
+      fail: function (res) { //这里写调用接口失败之后所运行的函数
+        console.log('.........fail..........');
+      }
+    })
   },
   //登录退出
-  logout:function(){
-    
-  }, 
-  // 更换头像
-  changeFace:function(){
-   
+  logout: function () {
+
   },
-  onReady(){
+  // 更换头像
+  changeFace: function () {
+
+  },
+  onReady() {
     if (!this.data.displayDemo) {
       wx.setNavigationBarTitle({
         title: "我的",
       })
     }
   },
-  uploadVideo:function(){
+  uploadVideo: function () {
     //调用工具类中的上传组件
     wx.redirectTo({
       url: '/page/lenglish/pages/add/add',
@@ -126,11 +172,11 @@ Page({
   },
   // 动态tob
   // 作品
-  doSelectWork:function(){
+  doSelectWork: function () {
     this.setData({
       isSelectdWork: "video-info-selected",
       isSelectdLike: "",
-      isSelectdFollow: "",  
+      isSelectdFollow: "",
       // 作品
       myVideoList: [],
       myVideoPage: 1,
@@ -176,17 +222,17 @@ Page({
   },
   //收藏
   doSelectLike: function () {
-    
+
   },
   //关注
   doSelectFollow: function () {
-    
+
   },
   // 作品查询
-  getMyVideoWork(page){
+  getMyVideoWork(page) {
     var thar = this;
     wx.showLoading();
-    sdk.listMyAv(this.data.openid, function(res){
+    sdk.listMyAv(this.data.openid, function (res) {
       console.log("listMyAv", res)
       //隐藏加载图
       wx.hideLoading();
@@ -199,7 +245,7 @@ Page({
         thar.setData({
           myVideoPage: page,
           myVideoList: newList,
-          serverUrl: sdk.HOST_MEDIAT_URL +'/trans_asr_img/',
+          serverUrl: sdk.HOST_MEDIAT_URL + '/trans_asr_img/',
         })
       }
     })
@@ -228,9 +274,9 @@ Page({
   },
   filterWaitData(data) {
     let result = []
-    if (data){
-      data.map(function(item, index){
-        if (!item['down_btn']){
+    if (data) {
+      data.map(function (item, index) {
+        if (!item['down_btn']) {
           result.push(item)
         }
       })
@@ -239,14 +285,14 @@ Page({
   },
   //收藏查询
   getListVideoList(page) {
-    
+
   },
   //上拉加载
   onReachBottom: function () {
     //that.doSelectWork();
   },
   //点击作品或收藏图片则打开视频
-  showVideo:function(e){
+  showVideo: function (e) {
     var videoList = this.data.myVideoList;
     //获取视频下标
     var arrindx = e.target.dataset.arrindex;
@@ -254,7 +300,7 @@ Page({
     var videoInfo = JSON.stringify(videoList);
     //跳转视频播放页面并进行播放
     wx.navigateTo({
-      url: '/page/lenglish/pages/viewvideo/viewvideo?videoInfo=' + videoInfo + '&current='+ arrindx,
+      url: '/page/lenglish/pages/viewvideo/viewvideo?videoInfo=' + videoInfo + '&current=' + arrindx,
     })
   },
   editVideo: function (e) {
@@ -263,11 +309,11 @@ Page({
     var videoList = this.data.waitVideoList;
     var arrindx = e.target.dataset.arrindex;
     var _video = videoList[arrindx]
-    if (_video){
+    if (_video) {
       wx.navigateTo({
         url: '/page/lenglish/pages/editsrt/editsrt?url=' + _video['url'] + '&lang=' + _video['lang'] + '&id=' + _video['id'],
       })
-    }else{
+    } else {
       wx.showToast({
         title: '没有响应！',
         icon: 'none'
@@ -291,11 +337,15 @@ Page({
     let that = this
     wx.cloud.callFunction({
       name: 'addUser',
-      data: { userMsg: user },
+      data: {
+        userMsg: user
+      },
       success: res => {
         console.log('[云函数] [addUser] addUser: ', res)
         let _openid = res.result.openid
-        user = utils.extend({}, user, { openid: _openid });
+        user = utils.extend({}, user, {
+          openid: _openid
+        });
         //请求rob的随机登录
         sdk.setSession(user)
         that.setData({
