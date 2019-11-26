@@ -26,16 +26,6 @@ Page({
     showRowAnim: false,
     currentTranslateY: 0,
     touchStartingY: 0,
-    // videos: [{
-    //   src: "https://aweme.snssdk.com/aweme/v1/playwm/?video_id=v0200faf0000bg5joco1ahq89k7ik9j0&line=0",
-    //   poster: "https://p3.pstatp.com/large/131040001488de047292a.jpg"
-    // }, {
-    //   src: "https://aweme.snssdk.com/aweme/v1/playwm/?video_id=v0200fce0000bg36q72j2boojh1t030g&line=0",
-    //   poster: "https://p99.pstatp.com/large/12c5c0009891b32e947b7.jpg",
-    // }, {
-    //   src: "https://aweme.snssdk.com/aweme/v1/playwm/?video_id=v0300fd10000bfrb9mlpimm72a92fsj0&line=0",
-    //   poster: "https://p99.pstatp.com/large/12246000525d4c87900e7.jpg"
-    // }],
     videos: [],
     videoIndex: 0,
     rowCurrent: 0,
@@ -79,7 +69,7 @@ Page({
         that.setData({
           videos: res.data.result,
           videoIndex: 0,
-          currentTranslateY: -current * windowHeight,
+          currentTranslateY: -0 * windowHeight,
           mode: 'my',
         })
       },
@@ -161,7 +151,7 @@ Page({
 
     // 绑定updateVideoIndex事件，更新当前播放视频index
     this.myevent.on('updateVideoIndex', this, function (index) {
-      console.log('event updateVideoIndex:', index)
+      console.log('event updateVideoIndex1:', index)
       this.switchVideo(this.data.rowCurrent)
       setTimeout(() => {
         this.setData({
@@ -183,30 +173,30 @@ Page({
     })
 
     // 绑定updateVideoRIndex事件，横向更新当前播放视频
-    this.myevent.on('updateVideoRIndex', this, function (index) {
-      console.log('event updateVideoRIndex:', index)
-      let that = this
-      let rowIndex = this.data.rowCurrent
-      rowIndex += index
-      this.switchVideo(rowIndex)
-      setTimeout(() => {
-        that.setData({
-          animationShow: false,
-          showRowAnim: false,
-          //rzindex: -1,
-          playState: true,
-        }, () => {
-          setTimeout(() => {
-            that.vvideo.play()
-          }, 50)
-          setTimeout(() => {
-            this.setData({
-              rzindex: -1,
-            })
-          }, 150)
-        })
-      }, 490)
-    })
+    // this.myevent.on('updateVideoRIndex', this, function (index) {
+    //   console.log('event updateVideoRIndex2:', index)
+    //   let that = this
+    //   let rowIndex = this.data.rowCurrent
+    //   rowIndex += index
+    //   this.switchVideo(rowIndex)
+    //   setTimeout(() => {
+    //     that.setData({
+    //       animationShow: false,
+    //       showRowAnim: false,
+    //       //rzindex: -1,
+    //       playState: true,
+    //     }, () => {
+    //       setTimeout(() => {
+    //         that.vvideo.play()
+    //       }, 50)
+    //       setTimeout(() => {
+    //         this.setData({
+    //           rzindex: -1,
+    //         })
+    //       }, 150)
+    //     })
+    //   }, 490)
+    // })
   },
   loadData(status, callback) {
     var that = this
@@ -214,99 +204,99 @@ Page({
       console.log('我的视频数据暂时通过参数传递，所以不加载。')
       return
     }
-    sdk.listPidAv(function (res) {
-      let videoList = res.data
-      if (videoList) {
-        let ids = []
-        videoList.map(function (value, index) {
-          value = that.filterSubject(value)
-          ids.push(value['id'])
-        })
-        //同时获取用户信息
-        sdk.getUserByIds(ids, function (userList) {
+    // sdk.listPidAv(function (res) {
+    //   let videoList = res.data
+    //   if (videoList) {
+    //     let ids = []
+    //     videoList.map(function (value, index) {
+    //       value = that.filterSubject(value)
+    //       ids.push(value['id'])
+    //     })
+    //     //同时获取用户信息
+    //     sdk.getUserByIds(ids, function (userList) {
 
-          videoList.map(function (value, index) {
-            if (userList) {
-              userList.map(function (value2, index2) {
-                if (value['id'] == value2['openid']) {
-                  value['userInfo'] = value2
-                }
-              })
-            }
-          })
+    //       videoList.map(function (value, index) {
+    //         if (userList) {
+    //           userList.map(function (value2, index2) {
+    //             if (value['id'] == value2['openid']) {
+    //               value['userInfo'] = value2
+    //             }
+    //           })
+    //         }
+    //       })
 
-          let newVideoList = that.data.videos
-          if (status == 0) {
-            newVideoList = []
-          }
-          that.setData({
-            videos: newVideoList.concat(videoList)
-          })
-          callback(that.data.videos)
+    //       let newVideoList = that.data.videos
+    //       if (status == 0) {
+    //         newVideoList = []
+    //       }
+    //       that.setData({
+    //         videos: newVideoList.concat(videoList)
+    //       })
+    //       callback(that.data.videos)
 
-        }, function (err) {
-          console.log('getUserByIds fail', err)
-          let newVideoList = that.data.videos
-          if (status == 0) {
-            newVideoList = []
-          }
-          that.setData({
-            videos: newVideoList.concat(videoList)
-          })
-          callback(that.data.videos)
-        })
-      }
+    //     }, function (err) {
+    //       console.log('getUserByIds fail', err)
+    //       let newVideoList = that.data.videos
+    //       if (status == 0) {
+    //         newVideoList = []
+    //       }
+    //       that.setData({
+    //         videos: newVideoList.concat(videoList)
+    //       })
+    //       callback(that.data.videos)
+    //     })
+    //   }
 
-    })
+    // })
   },
-  goUser(e) {
-    let userid = e.currentTarget.dataset.openid
-    console.log('userid', userid)
-    if (!userid) {
-      return
-    }
-    sdk.getUserByIds([userid], function (userList) {
-      console.log('success', userList)
-      let _userInfo = null
-      userList.map(function (item, index) {
-        if (userid == item['openid']) {
-          _userInfo = item
-        }
-      })
-      if (_userInfo) {
-        wx.navigateTo({
-          url: '/page/lenglish/pages/mine/mine?userInfo=' + JSON.stringify(_userInfo),
-        })
-      }
-    }, function (err) {
-      console.log('getUserByIds fail', err)
-    })
-  },
-  goUserHome(e) {
-    //this.pauseVideo()
-    let userid = e.currentTarget.dataset.openid
-    console.log('userid', userid)
-    let videoList = this.data.videos
-    let findUserFlag = false
-    let params = null
-    videoList.map(function (value, index) {
-      console.log('openid', value['id'])
-      if (value['id'] == userid) {
-        params = JSON.stringify(value['userInfo'])
-        findUserFlag = true
-      }
-    })
-    if (findUserFlag) {
-      wx.navigateTo({
-        url: '/page/lenglish/pages/mine/mine?userInfo=' + params,
-      })
-    } else {
-      wx.showToast({
-        title: '没有找到用户!',
-        icon: 'loading'
-      })
-    }
-  },
+  // goUser(e) {
+  //   let userid = e.currentTarget.dataset.openid
+  //   console.log('userid', userid)
+  //   if (!userid) {
+  //     return
+  //   }
+  //   sdk.getUserByIds([userid], function (userList) {
+  //     console.log('success', userList)
+  //     let _userInfo = null
+  //     userList.map(function (item, index) {
+  //       if (userid == item['openid']) {
+  //         _userInfo = item
+  //       }
+  //     })
+  //     if (_userInfo) {
+  //       wx.navigateTo({
+  //         url: '/page/lenglish/pages/mine/mine?userInfo=' + JSON.stringify(_userInfo),
+  //       })
+  //     }
+  //   }, function (err) {
+  //     console.log('getUserByIds fail', err)
+  //   })
+  // },
+  // goUserHome(e) {
+  //   //this.pauseVideo()
+  //   let userid = e.currentTarget.dataset.openid
+  //   console.log('userid', userid)
+  //   let videoList = this.data.videos
+  //   let findUserFlag = false
+  //   let params = null
+  //   videoList.map(function (value, index) {
+  //     console.log('openid', value['id'])
+  //     if (value['id'] == userid) {
+  //       params = JSON.stringify(value['userInfo'])
+  //       findUserFlag = true
+  //     }
+  //   })
+  //   if (findUserFlag) {
+  //     wx.navigateTo({
+  //       url: '/page/lenglish/pages/mine/mine?userInfo=' + params,
+  //     })
+  //   } else {
+  //     wx.showToast({
+  //       title: '没有找到用户!',
+  //       icon: 'loading'
+  //     })
+  //   }
+  // },
   like: function (e) {
     // 验证用户信息
     if (!app.globalData.hasLogin) {
@@ -485,18 +475,7 @@ Page({
     }
   },
   apply() {
-    //this.pauseVideo()
-    // wx.navigateTo({
-    //   url: '/page/lenglish/pages/add/add',
-    // })
-    wx.chooseVideo({
-      sourceType: ['album'],
-      maxDuration: 60,
-      camera: 'back',
-      success(res) {
-        console.log(res.tempFilePath)
-      }
-    })
+    sdk.video2local(function(res){console.log(res)})
   },
   goHome() {
     wx.redirectTo({

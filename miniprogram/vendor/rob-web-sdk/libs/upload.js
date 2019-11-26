@@ -4,20 +4,13 @@ const utils = require('./utils');
 const oss = require('./oss');
 
 var video2local = function (callback, callend) {
-  oss.policy(null, function(resp){
-    console.info(resp)
-    var res = resp.data
-    var _policy = res['policy']
-    var _accessid = res['accessid']
-    var _signature = res['signature']
-    var _host = res['host']
-    var _dir = res['dir']
     
-    debugger
     // 让用户选择一张图片
     wx.chooseVideo({
       sourceType: ['album'],
       success: chooseResult => {
+        var tempFilePath = chooseResult.tempFilePath
+        var videoTime = chooseResult.duration
         let tvideo = chooseResult.duration
         let sizevideo = chooseResult.size
         if (tvideo > 5 * 60) {
@@ -38,35 +31,25 @@ var video2local = function (callback, callend) {
           title: '正在上传...',
           mask: true,
         })
-        var file_path = chooseResult.tempFilePath
-        var file_list = file_path.split('/')
-        var src_file = file_list[file_list.length - 1]
-        var ext = src_file.substring(src_file.lastIndexOf("."))
-        var file_name = utils.createRandomId() + ext //file_list[file_list.length - 1]
 
-        var _key = _dir  + file_name
-        console.info('file_path:' + file_path)
-        console.info('file_name:' + file_name)
-        _host = constants.HOST_MEDIAT_URL //'https://trans-media.oss-cn-zhangjiakou.aliyuncs.com'
         wx.uploadFile({
-          url: _host,
-          filePath: file_path,
+          url: 'https://www.mengchongp2p.online/app/video/upload',
+          filePath: tempFilePath,
           name: 'file',
           formData:{
-            Filename: file_name,
-            filePath: file_path,
-            key: _key,
-            dir: _dir,
-            policy: _policy,
-            OSSAccessKeyId: _accessid,
-            success_action_status: '200',
-            signature: _signature
+            uid: '10006',
+            file: tempFilePath,
+            videoTime: videoTime
           },
           success: res=>{
+            wx.showToast({
+              title: '上传成功',
+              icon: 'none',
+            })
+            wx.navigateTo({
+              url: '/page/lenglish/pages/mine/mine',
+            })
             console.info('upload res:' + res)
-            var down_url = constants.HOST_MEDIAT_URL + '/' + _key
-            console.info('down_url:' + down_url)
-            callback(down_url)
           },
           complete: res=>{
             //callend(res)
@@ -97,10 +80,7 @@ var video2local = function (callback, callend) {
         })
       }
     })
-  }, function(res){
-    wx.hideLoading()
-    callend(res)
-  })
+  
   
 }
 
