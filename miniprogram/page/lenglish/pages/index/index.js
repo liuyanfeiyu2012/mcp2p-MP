@@ -26,16 +26,17 @@ Page({
     showRowAnim: false,
     currentTranslateY: 0,
     touchStartingY: 0,
-    videos: [{
-      src: "https://aweme.snssdk.com/aweme/v1/playwm/?video_id=v0200faf0000bg5joco1ahq89k7ik9j0&line=0",
-      poster: "https://p3.pstatp.com/large/131040001488de047292a.jpg"
-    }, {
-      src: "https://aweme.snssdk.com/aweme/v1/playwm/?video_id=v0200fce0000bg36q72j2boojh1t030g&line=0",
-      poster: "https://p99.pstatp.com/large/12c5c0009891b32e947b7.jpg",
-    }, {
-      src: "https://aweme.snssdk.com/aweme/v1/playwm/?video_id=v0300fd10000bfrb9mlpimm72a92fsj0&line=0",
-      poster: "https://p99.pstatp.com/large/12246000525d4c87900e7.jpg"
-    }],
+    // videos: [{
+    //   src: "https://aweme.snssdk.com/aweme/v1/playwm/?video_id=v0200faf0000bg5joco1ahq89k7ik9j0&line=0",
+    //   poster: "https://p3.pstatp.com/large/131040001488de047292a.jpg"
+    // }, {
+    //   src: "https://aweme.snssdk.com/aweme/v1/playwm/?video_id=v0200fce0000bg36q72j2boojh1t030g&line=0",
+    //   poster: "https://p99.pstatp.com/large/12c5c0009891b32e947b7.jpg",
+    // }, {
+    //   src: "https://aweme.snssdk.com/aweme/v1/playwm/?video_id=v0300fd10000bfrb9mlpimm72a92fsj0&line=0",
+    //   poster: "https://p99.pstatp.com/large/12246000525d4c87900e7.jpg"
+    // }],
+    videos: [],
     videoIndex: 0,
     rowCurrent: 0,
     objectFit: "contain",
@@ -66,6 +67,29 @@ Page({
     var share_param = options.shareInfo
     var current = options.current
     current = parseInt(current)
+    var that = this;
+    wx.request({
+      url: 'http://www.mengchongp2p.online/app/video/list',
+      method: 'get',
+      header: {
+        'Content-Type': 'application/json'
+      },
+      success: function (res) {//这里写调用接口成功之后所运行的函数
+        console.log(res.data);//调出来的数据在控制台显示，方便查看
+        that.setData({
+          videos: res.data.result,
+          videoIndex: 0,
+          currentTranslateY: -current * windowHeight,
+          mode: 'my',
+        })
+      },
+      fail: function (res) {//这里写调用接口失败之后所运行的函数
+        console.log('.........fail..........');
+      }
+    })
+
+
+
     if (json_param) {
       var _videos = JSON.parse(json_param)
       console.log('_videos', _videos)

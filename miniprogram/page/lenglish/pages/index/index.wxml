@@ -2,22 +2,22 @@
   <view class="animation-wrapper" animation="{{animation}}" wx:if="{{!showRowAnim}}" style="z-index:{{czindex}};">
     <block wx:for="{{videos}}" wx:key="{{item.src}}">
       <view class="animation-image-wrapper">
-        <image mode="aspectFill" class="animation-image" src="{{item.poster}}"></image>
+        <image mode="aspectFill" class="animation-image" src="{{item.videoBgUri}}"></image>
       </view>
     </block>
   </view>
   <view class="animation-wrapper" style="display:flex; flex-direction:row; width: 2250rpx; z-index:{{rzindex}};" animation="{{anim}}" wx:if="{{showRowAnim}}">
     <view class="animation-image-wrapper" style="width:750rpx;">
-      <image mode="aspectFill" class="animation-image" src="{{videos[videoIndex].poster}}"></image>
+      <image mode="aspectFill" class="animation-image" src="{{videos[videoIndex].videoBgUri}}"></image>
     </view>
     <view class="animation-image-wrapper" style="width:750rpx;">
-      <image mode="aspectFill" class="animation-image" src="{{videos[videoIndex].poster}}"></image>
+      <image mode="aspectFill" class="animation-image" src="{{videos[videoIndex].videoBgUri}}"></image>
     </view>
     <view class="animation-image-wrapper" style="width:750rpx;">
-      <image mode="aspectFill" class="animation-image" src="{{videos[videoIndex].poster}}"></image>
+      <image mode="aspectFill" class="animation-image" src="{{videos[videoIndex].videoBgUri}}"></image>
     </view>
   </view>
-  <video class="vvideo" bindtimeupdate="bindtimeupdate" id="kdvideo" binderror="binderror" autoplay="{{true}}" hidden="{{false}}" objectFit="cover" src="{{videos[videoIndex].src}}" bindplay="bindplay" controls="{{controls}}" loop="true" poster="{{videos[videoIndex].poster}}"
+  <video class="vvideo" bindtimeupdate="bindtimeupdate" id="kdvideo" binderror="binderror" autoplay="{{true}}" hidden="{{false}}" objectFit="cover" src="{{videos[videoIndex].videoUri}}" bindplay="bindplay" controls="{{controls}}" loop="true" poster="{{videos[videoIndex].videoBgUri}}"
     enable-progress-gesture="{{false}}" show-progress="{{false}}">
     <!-- <cover-view wx:if='{{rowCurrent == 0}}' class="lang-version" style="z-index:9998;">原声版</cover-view>
   <cover-view wx:if='{{rowCurrent == 1}}' class="lang-version" style="z-index:9998;">配音版</cover-view>
@@ -58,12 +58,14 @@
     首页
   </view>
   <view class="nav-item">
-    今日排行
+    今日
   </view>
-  <view class="nav-item" catchtap='apply'>+</view>
+  <view class="nav-item" catchtap='apply'>
+    <view class="add">+</view>
+  </view>
   <!-- <image class="icon" src='/image/add.png' catchtap='apply'></image> -->
   <view class="nav-item">
-    本月排行
+    本月
   </view>
   <view class="nav-item" catchtap="goMy">
     我
