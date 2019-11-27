@@ -148,7 +148,7 @@ page {
 .video-item {
   border: 1px solid #000;
   flex: 0 0 33.33%;
-  height: 330rpx;
+  height: 360rpx;
   background-size: 100% 100%;
   box-sizing: border-box;
 }

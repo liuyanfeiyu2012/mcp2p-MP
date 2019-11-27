@@ -37,18 +37,16 @@ Page({
     imageExt: '.jpg?x-oss-process=style/348-225-scale3',
     displayDemo: true,
     needLogin: true, //判断进入这个页面的用户是否需要登录
-    videoList: ['https://p3.pstatp.com/large/131040001488de047292a.jpg', 'https://p3.pstatp.com/large/131040001488de047292a.jpg', 'https://p3.pstatp.com/large/131040001488de047292a.jpg',
-
-      'https://p3.pstatp.com/large/131040001488de047292a.jpg', 'https://p3.pstatp.com/large/131040001488de047292a.jpg',
-      'https://p3.pstatp.com/large/131040001488de047292a.jpg',
-    ],
+    videoList: [],
+    likeCountTotal: 0,
     userInfo: {},
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo')
   },
-  onLoad: function(options) {
+  onLoad: function (options) {
     if (app.globalData.userInfo) {
       console.log(app.globalData.userInfo)
+      this.loadList(md5util.hexMD5(app.globalData.userInfo.nickName))
       this.setData({
         userInfo: app.globalData.userInfo,
         hasUserInfo: true
@@ -56,20 +54,19 @@ Page({
     } else if (this.data.canIUse) {
       // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
       // 所以此处加入 callback 以防止这种情况
-      console.log(3333)
       app.userInfoReadyCallback = res => {
-        console.log(123)
+        this.loadList(md5util.hexMD5(res.userInfo.nickName))
         this.setData({
           userInfo: res.userInfo,
           hasUserInfo: true
         })
       }
     } else {
-      console.log(443)
       // 在没有 open-type=getUserInfo 版本的兼容处理
       wx.getUserInfo({
         success: res => {
           app.globalData.userInfo = res.userInfo
+          this.loadList(md5util.hexMD5(res.userInfo.nickName))
           this.setData({
             userInfo: res.userInfo,
             hasUserInfo: true
@@ -79,10 +76,10 @@ Page({
     }
   },
   //关注点击和非关注点击
-  followMe: function(e) {
+  followMe: function (e) {
 
   },
-  getUserInfo: function(e) {
+  getUserInfo: function (e) {
     app.globalData.userInfo = e.detail.userInfo
     this.login(app.globalData.userInfo)
     this.setData({
@@ -90,7 +87,7 @@ Page({
       hasUserInfo: true
     })
   },
-  login: function(userInfo) {
+  login: function (userInfo) {
     console.log(userInfo)
     let self = this;
     app.globalData.userInfo.openId = md5util.hexMD5(userInfo.nickName)
@@ -101,19 +98,20 @@ Page({
         'Content-Type': 'application/json'
       },
       data: {
-          "avatar": userInfo.avatarUrl,
-          "openId": md5util.hexMD5(userInfo.nickName),
-          "wxName": userInfo.nickName
+        "avatar": userInfo.avatarUrl,
+        "openId": md5util.hexMD5(userInfo.nickName),
+        "wxName": userInfo.nickName
       },
-      success: function(res) { //这里写调用接口成功之后所运行的函数
+      success: function (res) { //这里写调用接口成功之后所运行的函数
         self.loadList(md5util.hexMD5(userInfo.nickName))
       },
-      fail: function(res) { //这里写调用接口失败之后所运行的函数
+      fail: function (res) { //这里写调用接口失败之后所运行的函数
         console.log('.........fail..........');
       }
     })
   },
-  loadList: function(openId) {
+  loadList: function (openId) {
+    let self = this
     wx.request({
       url: 'https://www.mengchongp2p.online/app/customer/centre',
       method: 'get',
@@ -123,20 +121,24 @@ Page({
       data: {
         openId: openId
       },
-      success: function(res) { //这里写调用接口成功之后所运行的函数
+      success: function (res) { //这里写调用接口成功之后所运行的函数
         console.log(res)
+        self.setData({
+          videoList: res.data.result.videoList,
+          likeCountTotal: res.data.result.likeCountTotal
+        })
       },
-      fail: function(res) { //这里写调用接口失败之后所运行的函数
+      fail: function (res) { //这里写调用接口失败之后所运行的函数
         console.log('.........fail..........');
       }
     })
   },
   //登录退出
-  logout: function() {
+  logout: function () {
 
   },
   // 更换头像
-  changeFace: function() {
+  changeFace: function () {
 
   },
   onReady() {
@@ -146,7 +148,7 @@ Page({
       })
     }
   },
-  uploadVideo: function() {
+  uploadVideo: function () {
     //调用工具类中的上传组件
     wx.redirectTo({
       url: '/page/lenglish/pages/add/add',
@@ -154,7 +156,7 @@ Page({
   },
   // 动态tob
   // 作品
-  doSelectWork: function() {
+  doSelectWork: function () {
     this.setData({
       isSelectdWork: "video-info-selected",
       isSelectdLike: "",
@@ -178,7 +180,7 @@ Page({
     });
     this.getMyVideoWork(1);
   },
-  doSelectWait: function() {
+  doSelectWait: function () {
     this.setData({
       isSelectdWork: "",
       isSelectdLike: "video-info-selected",
@@ -203,18 +205,18 @@ Page({
     this.getMyVideoWait(1);
   },
   //收藏
-  doSelectLike: function() {
+  doSelectLike: function () {
 
   },
   //关注
-  doSelectFollow: function() {
+  doSelectFollow: function () {
 
   },
   // 作品查询
   getMyVideoWork(page) {
     var thar = this;
     wx.showLoading();
-    sdk.listMyAv(this.data.openid, function(res) {
+    sdk.listMyAv(this.data.openid, function (res) {
       console.log("listMyAv", res)
       //隐藏加载图
       wx.hideLoading();
@@ -236,7 +238,7 @@ Page({
   getMyVideoWait(page) {
     var thar = this;
     wx.showLoading();
-    sdk.listPreAv(this.data.openid, function(res) {
+    sdk.listPreAv(this.data.openid, function (res) {
       console.log("listPreAv", res)
       //隐藏加载图
       wx.hideLoading();
@@ -257,7 +259,7 @@ Page({
   filterWaitData(data) {
     let result = []
     if (data) {
-      data.map(function(item, index) {
+      data.map(function (item, index) {
         if (!item['down_btn']) {
           result.push(item)
         }
@@ -270,11 +272,11 @@ Page({
 
   },
   //上拉加载
-  onReachBottom: function() {
+  onReachBottom: function () {
     //that.doSelectWork();
   },
   //点击作品或收藏图片则打开视频
-  showVideo: function(e) {
+  showVideo: function (e) {
     var videoList = this.data.myVideoList;
     //获取视频下标
     var arrindx = e.target.dataset.arrindex;
@@ -285,7 +287,7 @@ Page({
       url: '/page/lenglish/pages/viewvideo/viewvideo?videoInfo=' + videoInfo + '&current=' + arrindx,
     })
   },
-  editVideo: function(e) {
+  editVideo: function (e) {
     //跳转到字幕处理页面
     console.log('跳转到字幕处理页面')
     var videoList = this.data.waitVideoList;
@@ -302,7 +304,7 @@ Page({
       })
     }
   },
-  bindGetUserInfo: function(e) {
+  bindGetUserInfo: function (e) {
     console.log(e.detail)
     let role = e.target.dataset.role
     let that = this
@@ -315,7 +317,7 @@ Page({
       sdk.clearSession()
     }
   },
-  addUser: function(user) {
+  addUser: function (user) {
     let that = this
     wx.cloud.callFunction({
       name: 'addUser',

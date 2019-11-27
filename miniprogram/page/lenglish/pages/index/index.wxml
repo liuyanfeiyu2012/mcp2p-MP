@@ -61,14 +61,14 @@
     首页
   </view>
   <view class="nav-item">
-    今日
+    日榜
   </view>
   <view class="nav-item" catchtap='apply'>
     <view class="add">+</view>
   </view>
   <!-- <image class="icon" src='/image/add.png' catchtap='apply'></image> -->
   <view class="nav-item">
-    本月
+    月榜
   </view>
   <view class="nav-item" catchtap="goMy">
     我的

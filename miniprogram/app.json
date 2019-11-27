@@ -5,7 +5,9 @@
     "page/lenglish/pages/listtt/listtt",
     "page/lenglish/pages/editsrt/editsrt",
     "page/lenglish/pages/mine/mine",
-    "page/lenglish/pages/viewvideo/viewvideo"
+    "page/lenglish/pages/viewvideo/viewvideo",
+    "page/lenglish/pages/rank/ran",
+    "page/lenglish/pages/rank/rank"
   ],
   "window": {
     "navigationBarTextStyle": "black",

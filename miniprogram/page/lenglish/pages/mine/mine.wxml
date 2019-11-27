@@ -11,19 +11,19 @@
     <!-- <button wx:if="{{needLogin}}" class="mini-btn" type="primary" size="mini" bindtap='uploadVideo'>上传作品</button> -->
   </view>
   <view class="info-data">
-    <view class="info-item">
+    <!-- <view class="info-item">
       <text class="num">12</text>关注
     </view>
     <view class="info-item">
       <text class="num">12</text>粉丝
-    </view>
+    </view> -->
     <view class="info-item">
-      <text class="num">12</text>骨头
+      <text class="num">{{likeCountTotal}}</text>骨头
     </view>
   </view>
 
   <view class="video-wrap">
-    <view wx:for="{{videoList}}" wx:for-item="video" class="video-item" style="{{'background-image: url('+video+');'}}" wx:key="video">
+    <view wx:for="{{videoList}}" wx:for-item="video" class="video-item" style="{{'background-image: url('+video.videoBgUri+');'}}" wx:key="video" bindtap='showVideo'>
     </view>
   </view>
 
