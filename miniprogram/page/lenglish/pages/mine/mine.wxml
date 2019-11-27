@@ -1,10 +1,13 @@
 <view class="mine-wrap">
   <view class="user-info">
-    
-    <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo">登录</button>
-    <image wx:else src='{{userInfo.avatarUrl}}' class='face'></image>
-    <!-- <label wx:else class='nickname'>{{ userInfo.nickName }}</label> -->
-    <!-- 判断是否是自己 -->
+    <block wx:if="{{!hasUserInfo && canIUse}}">
+      <button open-type="getUserInfo" bindgetuserinfo="getUserInfo" class="login-btn">登录</button>
+    </block>
+    <block wx:else>
+      <image src='{{userInfo.avatarUrl}}' class='face'></image>
+      <label class='nickname'>{{ userInfo.nickName }}</label>
+    </block>
+    <!-- 判断是否是自己
     <!-- <button wx:if="{{needLogin}}" class="mini-btn" type="primary" size="mini" bindtap='uploadVideo'>上传作品</button> -->
   </view>
   <view class="info-data">
@@ -20,7 +23,7 @@
   </view>
 
   <view class="video-wrap">
-    <view wx:for="{{videoList}}" wx:for-item="video" class="video-item" style="{{'background-image: url('+video+');'}}">
+    <view wx:for="{{videoList}}" wx:for-item="video" class="video-item" style="{{'background-image: url('+video+');'}}" wx:key="video">
     </view>
   </view>
 

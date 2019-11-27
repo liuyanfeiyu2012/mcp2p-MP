@@ -475,7 +475,7 @@ Page({
     }
   },
   apply() {
-    sdk.video2local(function(res){console.log(res)})
+    sdk.video2local(function(res){console.log(res)}, null, app)
   },
   goHome() {
     wx.redirectTo({

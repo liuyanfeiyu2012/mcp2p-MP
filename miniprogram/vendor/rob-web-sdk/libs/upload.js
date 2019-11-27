@@ -2,9 +2,10 @@ const constants = require('./constants');
 const request = require('./request');
 const utils = require('./utils');
 const oss = require('./oss');
-
-var video2local = function (callback, callend) {
-    
+var video2local = function (callback, callend, app) {
+  console.log('callback', callback)
+  console.log('callend', callend)
+    console.log(app)
     // 让用户选择一张图片
     wx.chooseVideo({
       sourceType: ['album'],
@@ -37,7 +38,7 @@ var video2local = function (callback, callend) {
           filePath: tempFilePath,
           name: 'file',
           formData:{
-            uid: '10006',
+            uid: app.globalData.userInfo.openId,
             file: tempFilePath,
             videoTime: videoTime
           },

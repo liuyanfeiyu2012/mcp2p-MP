@@ -1,5 +1,6 @@
 const sdk = require('../../../../vendor/rob-web-sdk/index.js')
 const utils = require('../../../../vendor/rob-web-sdk/libs/utils.js')
+const md5util = require('../../../../util/md5.js')
 //获取应用实例
 const app = getApp()
 
@@ -45,54 +46,9 @@ Page({
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo')
   },
-  onLoad: function (options) {
-    // this.setData({
-    //   displayDemo: app.globalData.displayDemo
-    // })
-    // let userInfoStr = options.userInfo
-    // if (userInfoStr) {
-    //   let _userInfo = JSON.parse(userInfoStr)
-    //   this.setData({
-    //     needLogin: false,
-    //     userInfo: _userInfo,
-    //     openid: _userInfo.openid,
-    //   })
-    //   this.doSelectWork();
-    // } else {
-    //   //首次加载查询
-    //   var that = this;
-    //   if (!app.globalData.hasLogin) {
-    //     wx.getUserInfo(function (res) {
-    //       if (!res || !res.openid) {
-    //         return
-    //       }
-    //       console.log('login success!')
-    //       let _user = sdk.getSession()
-    //       that.setData({
-    //         userInfo: _user,
-    //         openid: _user.openid,
-    //         loginStatus: true,
-    //         faceUrl: _user.avatarUrl
-    //       });
-    //       console.log("image url:", sdk.HOST_MEDIAT_URL + '/trans_asr_img/')
-    //       that.doSelectWork();
-    //     }, function (err) {
-    //       console.log('login fail!')
-    //     })
-    //     // app.getUserOpenId(function (err, _openid) {
-    //     // });
-    //   } else {
-    //     let _userInfo = app.globalData.userInfo
-    //     that.setData({
-    //       userInfo: _userInfo,
-    //       openid: _userInfo.openid,
-    //       loginStatus: true,
-    //       faceUrl: _userInfo.avatarUrl
-    //     });
-    //     that.doSelectWork();
-    //   }
-    // }
+  onLoad: function(options) {
     if (app.globalData.userInfo) {
+      console.log(app.globalData.userInfo)
       this.setData({
         userInfo: app.globalData.userInfo,
         hasUserInfo: true
@@ -100,13 +56,16 @@ Page({
     } else if (this.data.canIUse) {
       // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
       // 所以此处加入 callback 以防止这种情况
+      console.log(3333)
       app.userInfoReadyCallback = res => {
+        console.log(123)
         this.setData({
           userInfo: res.userInfo,
           hasUserInfo: true
         })
       }
     } else {
+      console.log(443)
       // 在没有 open-type=getUserInfo 版本的兼容处理
       wx.getUserInfo({
         success: res => {
@@ -120,41 +79,64 @@ Page({
     }
   },
   //关注点击和非关注点击
-  followMe: function (e) {
+  followMe: function(e) {
 
   },
-  getUserInfo: function (e) {
-    console.log(e)
+  getUserInfo: function(e) {
     app.globalData.userInfo = e.detail.userInfo
+    this.login(app.globalData.userInfo)
     this.setData({
       userInfo: e.detail.userInfo,
       hasUserInfo: true
     })
   },
-  loadList: function () {
+  login: function(userInfo) {
+    console.log(userInfo)
+    let self = this;
+    app.globalData.userInfo.openId = md5util.hexMD5(userInfo.nickName)
     wx.request({
-      url: 'https://www.mengchongp2p.online/app/customer/centre',
+      url: 'https://www.mengchongp2p.online/app/customer/login',
       method: 'post',
       header: {
         'Content-Type': 'application/json'
       },
       data: {
-        openId: '10006'
+          "avatar": userInfo.avatarUrl,
+          "openId": md5util.hexMD5(userInfo.nickName),
+          "wxName": userInfo.nickName
       },
-      success: function (res) { //这里写调用接口成功之后所运行的函数
+      success: function(res) { //这里写调用接口成功之后所运行的函数
+        self.loadList(md5util.hexMD5(userInfo.nickName))
+      },
+      fail: function(res) { //这里写调用接口失败之后所运行的函数
+        console.log('.........fail..........');
+      }
+    })
+  },
+  loadList: function(openId) {
+    wx.request({
+      url: 'https://www.mengchongp2p.online/app/customer/centre',
+      method: 'get',
+      header: {
+        'Content-Type': 'application/json'
+      },
+      data: {
+        openId: openId
+      },
+      success: function(res) { //这里写调用接口成功之后所运行的函数
         console.log(res)
       },
-      fail: function (res) { //这里写调用接口失败之后所运行的函数
+      fail: function(res) { //这里写调用接口失败之后所运行的函数
         console.log('.........fail..........');
       }
     })
   },
   //登录退出
-  logout: function () {
+  logout: function() {
 
   },
   // 更换头像
-  changeFace: function () {
+  changeFace: function() {
 
   },
   onReady() {
@@ -164,7 +146,7 @@ Page({
       })
     }
   },
-  uploadVideo: function () {
+  uploadVideo: function() {
     //调用工具类中的上传组件
     wx.redirectTo({
       url: '/page/lenglish/pages/add/add',
@@ -172,7 +154,7 @@ Page({
   },
   // 动态tob
   // 作品
-  doSelectWork: function () {
+  doSelectWork: function() {
     this.setData({
       isSelectdWork: "video-info-selected",
       isSelectdLike: "",
@@ -196,7 +178,7 @@ Page({
     });
     this.getMyVideoWork(1);
   },
-  doSelectWait: function () {
+  doSelectWait: function() {
     this.setData({
       isSelectdWork: "",
       isSelectdLike: "video-info-selected",
@@ -221,18 +203,18 @@ Page({
     this.getMyVideoWait(1);
   },
   //收藏
-  doSelectLike: function () {
+  doSelectLike: function() {
 
   },
   //关注
-  doSelectFollow: function () {
+  doSelectFollow: function() {
 
   },
   // 作品查询
   getMyVideoWork(page) {
     var thar = this;
     wx.showLoading();
-    sdk.listMyAv(this.data.openid, function (res) {
+    sdk.listMyAv(this.data.openid, function(res) {
       console.log("listMyAv", res)
       //隐藏加载图
       wx.hideLoading();
@@ -254,7 +236,7 @@ Page({
   getMyVideoWait(page) {
     var thar = this;
     wx.showLoading();
-    sdk.listPreAv(this.data.openid, function (res) {
+    sdk.listPreAv(this.data.openid, function(res) {
       console.log("listPreAv", res)
       //隐藏加载图
       wx.hideLoading();
@@ -275,7 +257,7 @@ Page({
   filterWaitData(data) {
     let result = []
     if (data) {
-      data.map(function (item, index) {
+      data.map(function(item, index) {
         if (!item['down_btn']) {
           result.push(item)
         }
@@ -288,11 +270,11 @@ Page({
 
   },
   //上拉加载
-  onReachBottom: function () {
+  onReachBottom: function() {
     //that.doSelectWork();
   },
   //点击作品或收藏图片则打开视频
-  showVideo: function (e) {
+  showVideo: function(e) {
     var videoList = this.data.myVideoList;
     //获取视频下标
     var arrindx = e.target.dataset.arrindex;
@@ -303,7 +285,7 @@ Page({
       url: '/page/lenglish/pages/viewvideo/viewvideo?videoInfo=' + videoInfo + '&current=' + arrindx,
     })
   },
-  editVideo: function (e) {
+  editVideo: function(e) {
     //跳转到字幕处理页面
     console.log('跳转到字幕处理页面')
     var videoList = this.data.waitVideoList;
@@ -320,7 +302,7 @@ Page({
       })
     }
   },
-  bindGetUserInfo: function (e) {
+  bindGetUserInfo: function(e) {
     console.log(e.detail)
     let role = e.target.dataset.role
     let that = this
@@ -333,7 +315,7 @@ Page({
       sdk.clearSession()
     }
   },
-  addUser: function (user) {
+  addUser: function(user) {
     let that = this
     wx.cloud.callFunction({
       name: 'addUser',

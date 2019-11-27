@@ -159,3 +159,16 @@ page {
   justify-content: flex-start;
   align-content: flex-start;
 }
+
+.login-btn {
+  background-color: #f14885;
+  color: #fff;
+  width: 129rpx;
+  height: 66rpx;
+  font-size: 30rpx;
+  border-radius: 7rpx;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+}
