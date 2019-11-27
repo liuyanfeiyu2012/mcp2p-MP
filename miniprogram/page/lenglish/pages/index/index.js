@@ -488,6 +488,12 @@ Page({
       url: '/page/lenglish/pages/mine/mine',
     })
   },
+  goRank() {
+    //this.pauseVideo()
+    wx.navigateTo({
+      url: '/page/lenglish/pages/rank/rank',
+    })
+  },
   bindplay() {
     console.log('--- video play ---', this.data.playState,
       this.data.animationShow, this.data.playError)

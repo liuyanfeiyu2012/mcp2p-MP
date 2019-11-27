@@ -31,11 +31,11 @@
     <view class="btn-contain">
       <image wx:if="{{videos[videoIndex].like}}" class="icon2 right-icon" src='/image/like_red.png' catchtap='unlike'>取消喜欢</image>
       <image wx:if="{{!videos[videoIndex].like}}" class="icon2 right-icon" src='/image/like.png' catchtap='like'>喜欢</image>
-      <view>21</view>
+      <view>{{videos[videoIndex].likeCount}}</view>
     </view>
     <view class="btn-contain">
       <image class="icon2 right-icon" src='/image/talk.png' catchtap='talk'>评论</image>
-      <view>21</view>
+      <view>{{videos[videoIndex].commentList.length}}</view>
     </view>
     <view class="btn-contain">
       <button open-type='share' class="share" plain='true' catchtap="shareMe"></button>
@@ -60,14 +60,14 @@
   <view class="nav-item">
     首页
   </view>
-  <view class="nav-item">
+  <view class="nav-item" catchtap="goRank">
     日榜
   </view>
   <view class="nav-item" catchtap='apply'>
     <view class="add">+</view>
   </view>
   <!-- <image class="icon" src='/image/add.png' catchtap='apply'></image> -->
-  <view class="nav-item">
+  <view class="nav-item" catchtap="goRank">
     月榜
   </view>
   <view class="nav-item" catchtap="goMy">

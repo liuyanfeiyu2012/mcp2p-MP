@@ -1,2 +1,3 @@
-<!--miniprogram/page/lenglish/pages/rank/rank.wxml-->
-<text>miniprogram/page/lenglish/pages/rank/rank.wxml</text>
+<view class="rank-wrap">
+  <view wx:for="">111</view>
+</view>

@@ -1,1 +1,7 @@
-/* miniprogram/page/lenglish/pages/rank/rank.wxss */
+.rank-wrap {
+  background-color: #141414;
+  height: 100%;
+  color: #fff;
+  position: absolute;
+  width: 100%;
+}
