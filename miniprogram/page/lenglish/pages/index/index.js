@@ -7,6 +7,7 @@ const utils = require('../../../../util/util.js')
 const app = getApp()
 const windowHeight = wx.getSystemInfoSync().windowHeight
 const windowWidth = wx.getSystemInfoSync().windowWidth
+const recorderManager = wx.getRecorderManager();
 var start;
 
 Page({
@@ -47,6 +48,11 @@ Page({
     commentEnd: false,
 
     displayDemo: false,
+
+    openRecordingdis: "block",//录音图片的不同
+    shutRecordingdis: "none",//录音图片的不同
+    recordingTimeqwe: 0,//录音计时
+    setInter: ""//录音名称
   },
   myevent: null,
   onLoad: function (options) {
@@ -204,6 +210,7 @@ Page({
       console.log('我的视频数据暂时通过参数传递，所以不加载。')
       return
     }
+
     // sdk.listPidAv(function (res) {
     //   let videoList = res.data
     //   if (videoList) {
@@ -356,7 +363,6 @@ Page({
       commentsList: [],
     });
     this.commentPage = 1;
-    this.loadComment()
   },
   closeTalk: function (e) {
     this.setData({
@@ -431,33 +437,52 @@ Page({
     this.getCommentsList(this.commentPage)
   },
   getCommentsList: function (page) {
-    if (this.data.commentEnd) {
-      return
-    }
-    let video = this.data.videos[this.data.videoIndex]
-    let id = md5util.hexMD5(video['src'])
+    // if (this.data.commentEnd) {
+    //   return
+    // }
+    // let video = this.data.videos[this.data.videoIndex]
+    // let id = md5util.hexMD5(video['src'])
     let that = this
     wx.showLoading({
       title: '加载数据...',
     })
-    sdk.listComment(id, page, function (res) {
-      console.log('listComment', res)
-      if (res && res.length > 0) {
-        let _listComment = that.data.commentsList
-        if (_listComment) {
-          that.setData({
-            commentsList: _listComment.concat(res)
-          })
-        }
-        that.commentPage += 1
-      } else {
+    wx.request({
+      url: 'https://www.mengchongp2p.online/app/video/comment-list',
+      method: 'get',
+      header: {
+        'Content-Type': 'application/json'
+      },
+      data: {
+        videoId: '45944c88-8894-4046-a95f-5dfeefff53c5'
+      },
+      success: function (res) {//这里写调用接口成功之后所运行的函数
+        console.log(res.data);//调出来的数据在控制台显示，方便查看
         that.setData({
-          commentEnd: true,
+          commentsList: res.data.result
         })
+      },
+      fail: function (res) {//这里写调用接口失败之后所运行的函数
+        console.log('.........fail..........');
       }
-    }, function end(res) {
-      wx.hideLoading()
     })
+    // sdk.listComment(id, page, function (res) {
+    //   console.log('listComment', res)
+    //   if (res && res.length > 0) {
+    //     let _listComment = that.data.commentsList
+    //     if (_listComment) {
+    //       that.setData({
+    //         commentsList: _listComment.concat(res)
+    //       })
+    //     }
+    //     that.commentPage += 1
+    //   } else {
+    //     that.setData({
+    //       commentEnd: true,
+    //     })
+    //   }
+    // }, function end(res) {
+    //   wx.hideLoading()
+    // })
   },
   shareMe: function (e) {
     console.log('click share')
@@ -843,7 +868,115 @@ Page({
       icon: 'none',
       duration: 1000
     })
-  }
+  },
+  //录音计时器
+  recordingTimer: function () {
+    var that = this;
+    //将计时器赋值给setInter
+    that.data.setInter = setInterval(
+      function () {
+        var time = that.data.recordingTimeqwe + 1;
+        that.setData({
+          recordingTimeqwe: time
+        })
+      }
+      , 1000);
+  },
+  //开始录音
+  openRecording: function () {
+    var that = this;
+    wx.getSystemInfo({
+      success: function (res) {
+        that.setData({
+          shutRecordingdis: "block",
+          openRecordingdis: "none"
+        })
+      }
+    })
+    const options = {
+      duration: 60000, //指定录音的时长，单位 ms，最大为10分钟（600000），默认为1分钟（60000）
+      sampleRate: 16000, //采样率
+      numberOfChannels: 1, //录音通道数
+      encodeBitRate: 96000, //编码码率
+      format: 'mp3', //音频格式，有效值 aac/mp3
+      frameSize: 50, //指定帧大小，单位 KB
+    }
+    //开始录音计时   
+    that.recordingTimer();
+    //开始录音
+    recorderManager.start(options);
+    recorderManager.onStart(() => {
+      this.loadComment()
+
+      wx.showToast({
+        title: '开始录音',
+        icon: 'success',
+        duration: 2000
+      })
+    });
+    //错误回调
+    recorderManager.onError((res) => {
+      console.log(res);
+    })
+  },
+
+  //结束录音
+  shutRecording: function () {
+    var that = this;
+    wx.getSystemInfo({
+      success: function (res) {
+        that.setData({
+          shutRecordingdis: "none",
+          openRecordingdis: "block"
+        })
+      }
+    })
+    recorderManager.stop();
+    recorderManager.onStop((res) => {
+      wx.showToast({
+        title: '结束录音',
+        icon: 'success',
+        duration: 2000
+      })
+      const { tempFilePath } = res;
+      //结束录音计时  
+      clearInterval(that.data.setInter);
+      //上传录音
+      wx.uploadFile({
+        url: 'https://www.mengchongp2p.online/app/video/comment',//这是你自己后台的连接
+        filePath: tempFilePath,
+        name: "file",//后台要绑定的名称
+        header: {
+          "Content-Type": "multipart/form-data"
+        },
+        //参数绑定
+        formData: {
+          uid: "640a6729bffd6e4eb3efd8a42946579a",
+          videoId: '45944c88-8894-4046-a95f-5dfeefff53c5',
+          file: tempFilePath,
+        },
+        success: function (ress) {
+          console.log(res);
+          wx.showToast({
+            title: '保存完成',
+            icon: 'success',
+            duration: 2000
+          })
+        },
+        fail: function (ress) {
+          console.log("。。录音保存失败。。");
+        }
+      })
+    })
+  },
+
+  //录音播放
+  recordingAndPlaying: function (eve) {
+    wx.playBackgroundAudio({
+      //播放地址
+      dataUrl: '' + eve.currentTarget.dataset.gid + ''
+    })
+  },
 })
 function throttle(fn, delay) {
   var timer = null;

@@ -56,24 +56,24 @@
       <view>我的</view>
     </view>
   </view> -->
-  <view class="nav-wrap"  style="z-index:10000;">
-  <view class="nav-item">
-    首页
+  <view class="nav-wrap" style="z-index:10000;">
+    <view class="nav-item">
+      首页
+    </view>
+    <view class="nav-item" catchtap="goRank">
+      日榜
+    </view>
+    <view class="nav-item" catchtap='apply'>
+      <view class="add">+</view>
+    </view>
+    <!-- <image class="icon" src='/image/add.png' catchtap='apply'></image> -->
+    <view class="nav-item" catchtap="goRank">
+      月榜
+    </view>
+    <view class="nav-item" catchtap="goMy">
+      我的
+    </view>
   </view>
-  <view class="nav-item" catchtap="goRank">
-    日榜
-  </view>
-  <view class="nav-item" catchtap='apply'>
-    <view class="add">+</view>
-  </view>
-  <!-- <image class="icon" src='/image/add.png' catchtap='apply'></image> -->
-  <view class="nav-item" catchtap="goRank">
-    月榜
-  </view>
-  <view class="nav-item" catchtap="goMy">
-    我的
-  </view>
-</view>
 </view>
 
 <wux-popup position="bottom" visible="{{ commentVisible }}" bind:close="onClose2">
@@ -94,9 +94,9 @@
       toNickName：回复那个人的名字
       -->
           <view class="container-comments">
-            <image class='face-comments' src='{{item.avatarUrl}}' catchtap="goUser" data-openid='{{item.openid}}'></image>
+            <image class='face-comments' src='{{item.avatar}}' catchtap="goUser" data-openid='{{item.openid}}'></image>
             <view class='nickname-comments'>
-              <label class='nickname-lbl'>@{{item.nickname}}</label>
+              <label class='nickname-lbl'>@{{item.userName}}</label>
               <!-- 留言： -->
               <block wx:if="{{item.toNickName && item.toNickName != null && item.toNickName != ''}}">
                 回复
@@ -108,7 +108,7 @@
             </view>
           </view>
           <view class='comments-replaycontent' wx:if="{{item.toCommentContent}}">{{item.toCommentContent}}</view>
-          <view class='comments-content'>{{item.comment}}</view>
+          <view class='comments-content'>{{item.context}}</view>
         </view>
 
       </view>
@@ -117,10 +117,26 @@
   </scroll-view>
   <!-- </view> -->
   <!-- 评论框 -->
-  <view class='saySthView'>
+  <!-- <view class='saySthView'> -->
     <!-- 评论内容根据情况进行改变 -->
-    <input name="commentContent" class='saySth' placeholder='{{placeholder}}' confirm-type='send' bindconfirm='saveComment' focus="{{commentFocus}}" value='{{contentValue}}' data-replyCommentContent='{{replyCommentContent}}' data-replyToOpenId="{{replyToOpenId}}"
+    <!-- <input name="commentContent" class='saySth' placeholder='{{placeholder}}' confirm-type='send' bindconfirm='saveComment' focus="{{commentFocus}}" value='{{contentValue}}' data-replyCommentContent='{{replyCommentContent}}' data-replyToOpenId="{{replyToOpenId}}"
       data-replyToNickName="{{replyToNickName}}"></input>
+  </view> -->
+
+  <view class='progress_box' bindtap='openRecording' style="display:{{openRecordingdis}}">
+    <view class="progress_bgs">
+      <view class="progress_bg">
+        <image class="progress_img" src='../../../../image/record.png'></image>
+      </view>
+    </view>
+  </view>
+
+  <view class='progress_box' bindtap='shutRecording' style="display:{{shutRecordingdis}}">
+    <view class="progress_bgs">
+      <view class="progress_bg">
+        <image class="progress_img" src='../../../../image/stop.png'></image>
+      </view>
+    </view>
   </view>
 
 </wux-popup>
