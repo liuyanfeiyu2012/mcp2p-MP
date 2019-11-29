@@ -281,7 +281,7 @@ Page({
     //获取视频下标
     var arrindx = e.target.dataset.arrindex;
     //将json对象转换为字符串
-    var videoInfo = JSON.stringify(videoList);
+    var videoInfo = JSON.stringify(this.data.videoList[arrindx]);
     //跳转视频播放页面并进行播放
     wx.navigateTo({
       url: '/page/lenglish/pages/viewvideo/viewvideo?videoInfo=' + videoInfo + '&current=' + arrindx,

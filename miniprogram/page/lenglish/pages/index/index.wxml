@@ -54,7 +54,6 @@
     </view>
     <view class="btn-contain">
       <button open-type='share' class="share" plain='true' catchtap="shareMe"></button>
-      <view>21</view>
     </view>
   </view>
   <image class="play-btn" wx:if="{{(!playState)||playError}}" src="../../../../image/play.png"></image>

@@ -1,105 +1,159 @@
-
 <view class="container" catchtap="changePlayStatus" bindtouchstart="touchStart" bindtouchend="touchEnd" bindtouchcancel="touchCancel">
   <view class="animation-wrapper" animation="{{animation}}" wx:if="{{!showRowAnim}}" style="z-index:{{czindex}};">
     <block wx:for="{{videos}}" wx:key="{{item.src}}">
       <view class="animation-image-wrapper">
-        <image mode="aspectFill" class="animation-image" src="{{item.poster}}"></image>
+        <image mode="aspectFill" class="animation-image" src="{{item.videoBgUri}}"></image>
       </view>
     </block>
   </view>
   <view class="animation-wrapper" style="display:flex; flex-direction:row; width: 2250rpx; z-index:{{rzindex}};" animation="{{anim}}" wx:if="{{showRowAnim}}">
-      <view class="animation-image-wrapper" style="width:750rpx;">
-        <image mode="aspectFill" class="animation-image" src="{{videos[videoIndex].poster}}"></image>
-      </view>
-      <view class="animation-image-wrapper" style="width:750rpx;">
-        <image mode="aspectFill" class="animation-image" src="{{videos[videoIndex].poster}}"></image>
-      </view>
-      <view class="animation-image-wrapper" style="width:750rpx;">
-        <image mode="aspectFill" class="animation-image" src="{{videos[videoIndex].poster}}"></image>
-      </view>
+    <view class="animation-image-wrapper" style="width:750rpx;">
+      <image mode="aspectFill" class="animation-image" src="{{videos[videoIndex].videoBgUri}}"></image>
+    </view>
+    <view class="animation-image-wrapper" style="width:750rpx;">
+      <image mode="aspectFill" class="animation-image" src="{{videos[videoIndex].videoBgUri}}"></image>
+    </view>
+    <view class="animation-image-wrapper" style="width:750rpx;">
+      <image mode="aspectFill" class="animation-image" src="{{videos[videoIndex].videoBgUri}}"></image>
+    </view>
   </view>
-  <video class="vvideo" bindtimeupdate="bindtimeupdate" id="kdvideo" binderror="binderror" autoplay="{{autoplay}}" hidden="{{false}}" objectFit="cover" src="{{videos[videoIndex].src}}" bindplay="bindplay" controls="{{controls}}" loop="true" poster="{{videos[videoIndex].poster}}" enable-progress-gesture="{{false}}" show-progress="{{false}}">
+  <!-- 遮罩弹层 -->
+  <block wx:if="{{videos[videoIndex].animal}}">
+    <view class="mask" catchtouchmove="preventTouchMove" wx:if="{{showModal}}"></view>
+    <view class="modalDlg" wx:if="{{showModal}}">
+      <view class="animal-name" wx:if="{{videos[videoIndex].animal}}">
+        {{"萌宠名称："}}{{videos[videoIndex].animal}}
+      </view>
+      <view class="animal-desc" wx:if="{{videos[videoIndex].description}}">
+        {{"萌宠描述："}}{{videos[videoIndex].description}}
+      </view>
+      <view class="animal-name" wx:if="{{videos[videoIndex].recommendProduct}}">
+        {{"推荐商品："}}{{videos[videoIndex].recommendProduct}}
+      </view>
+      <button bindtap="go" class="close-info">关闭</button>
+    </view>
+    <button bindtap="submit" class="card-mask">撸一下</button>
+  </block>
+  <video class="vvideo" bindtimeupdate="bindtimeupdate" id="kdvideo" binderror="binderror" autoplay="{{true}}" hidden="{{false}}" objectFit="cover" src="{{videos[videoIndex].videoUri}}" bindplay="bindplay" controls="{{controls}}" loop="true" poster="{{videos[videoIndex].videoBgUri}}"
+    enable-progress-gesture="{{false}}" show-progress="{{false}}">
+    
   </video>
   <!-- 右侧区域  -->
   <view class="tools">
-    <view>
+    <view class="btn-contain">
       <image class="userinfo-avatar" catchtap="goUserHome" src="{{videos[videoIndex].userInfo.avatarUrl}}" data-openid="{{videos[videoIndex].userInfo.openid}}"></image>
     </view>
-    <view>
+    <view class="btn-contain">
       <image wx:if="{{videos[videoIndex].like}}" class="icon2 right-icon" src='/image/like_red.png' catchtap='unlike'>取消喜欢</image>
       <image wx:if="{{!videos[videoIndex].like}}" class="icon2 right-icon" src='/image/like.png' catchtap='like'>喜欢</image>
+      <view>{{videos[videoIndex].likeCount}}</view>
     </view>
-    <view>
-      <image class="icon2 right-icon" src='/image/talk.png' catchtap='talk'>评论</image>
+    <view class="btn-contain">
+      <image class="icon2 right-icon" src='/image/talk.png' catchtap='talk' >评论</image>
+      <view>{{videos[videoIndex].commentList.length}}</view>
     </view>
-    <view>
-      <button open-type='share' class="share"  plain='true' catchtap="shareMe"></button>
+    <view class="btn-contain">
+      <button open-type='share' class="share" plain='true' catchtap="shareMe"></button>
     </view>
   </view>
   <image class="play-btn" wx:if="{{(!playState)||playError}}" src="../../../../image/play.png"></image>
-  <progress class="progress" percent="{{percent}}" activeColor="#ffffff" backgroundColor="#A9A9A9" stroke-width="1"  wx:if="{{true}}" style="z-index:10000;"/>
+  <progress class="progress" percent="{{percent}}" activeColor="#ffffff" backgroundColor="#A9A9A9" stroke-width="1" wx:if="{{true}}" style="z-index:10000;" />
 
   <!-- 底部 -->
   <!-- <view class="footer" style="z-index:10000;" wx:if="{{mode == 'index'}}">
-    <view class='home' bindtap="goHome">
+    <view class='home' catchtap="goHome">
       <view>刷新</view>
     </view>
 
-    <image class="icon" src='/image/add.png' bindtap='apply'></image>
 
-    <view class='me' bindtap="goMy">
+    <view class='me' catchtap="goMy">
       <view>我的</view>
+    </view>
+  </view> -->
+  <!-- <view class="nav-wrap" style="z-index:10000;">
+    <view class="nav-item">
+      首页
+    </view>
+    <view class="nav-item" catchtap="goRank">
+      日榜
+    </view>
+    <view class="nav-item" catchtap='apply'>
+      <view class="add">+</view>
+    </view> -->
+    <!-- <image class="icon" src='/image/add.png' catchtap='apply'></image> -->
+    <!-- <view class="nav-item" catchtap="goRank">
+      月榜
+    </view>
+    <view class="nav-item" catchtap="goMy">
+      我的
     </view>
   </view> -->
 </view>
 
 <wux-popup position="bottom" visible="{{ commentVisible }}" bind:close="onClose2">
-    
-    <view class='comment-start'>评论列表<view class="close" catchtap="closeTalk"><wux-icon type="ios-close" color="white"/></view></view>
-    <!-- <view class='comments-all'  > -->
-    <scroll-view scroll-y class='comments-all' bindscrolltolower="loadComment">
-      <block wx:for="{{commentsList}}" wx:key="">
+
+  <view class='comment-start'>评论列表
+    <view class="close" catchtap="closeTalk">
+      <wux-icon type="ios-close" color="white" />
+    </view>
+  </view>
+  <!-- <view class='comments-all'  > -->
+  <scroll-view scroll-y class='comments-all'>
+    <block wx:for="{{commentsList}}" wx:key="" wx:for-index="idx" wx:if="{{commentsList.length > 0}}">
       <view class="comments-items">
-      <view class='comments-item' bindtap='replyFocus' 
-      data-fatherCommentContent="{{item.comment}}" 
-      data-toUserId="{{item.openid}}" 
-      data-toNickName="{{item.nickname}}">
-      <!-- 用户留言回复功能  data-:绑定数据方便获取，
+        <view class='comments-item' bindtap='replyFocus' data-fatherCommentContent="{{item.comment}}" data-toUserId="{{item.openid}}" data-toNickName="{{item.nickname}}">
+          <!-- 用户留言回复功能  data-:绑定数据方便获取，
       fatherCommentContent：留言内容
       toUserId：给谁回复
       toNickName：回复那个人的名字
       -->
-        <view class="container-comments">
-          <image class='face-comments' src='{{item.avatarUrl}}' catchtap="goUser" data-openid='{{item.openid}}'></image>
-          <view class='nickname-comments'>
-            <label class='nickname-lbl'>@{{item.nickname}}</label>
-            <!-- 留言： -->
-            <block wx:if="{{item.toNickName && item.toNickName != null && item.toNickName != ''}}">
-            回复
-            <label class='nickname-lbl'>{{item.toNickName}}</label>
-            </block>
-            <block wx:else>
-            留言
-            </block>
+          <view class="container-comments">
+            <view class="face-wrap">
+            <image class='face-comments' src='{{item.avatar}}' catchtap="goUser" data-openid='{{item.openid}}'></image>
+            </view>
+            <view class='nickname-comments'>
+              <label class='nickname-lbl'>@{{item.userName}}</label>
+              <!-- 留言： -->
+              <block wx:if="{{item.toNickName && item.toNickName != null && item.toNickName != ''}}">
+                回复
+                <label class='nickname-lbl'>{{item.toNickName}}</label>
+              </block>
+              <block wx:else>
+                留言
+              </block>
+            </view>
           </view>
+          <view class='comments-replaycontent' wx:if="{{item.toCommentContent}}">{{item.toCommentContent}}</view>
+          <view class='comments-content'>{{item.context}}<view class="sentiment">{{item.sentiment}}</view></view>
         </view>
-        <view class='comments-replaycontent' wx:if="{{item.toCommentContent}}">{{item.toCommentContent}}</view>
-        <view class='comments-content'>{{item.comment}}</view>
+
       </view>
-      
+    </block>
+    <view wx:if="{{commentsList.length === 0}}" class="comment-end">---------没有数据---------</view>
+  </scroll-view>
+  <!-- </view> -->
+  <!-- 评论框 -->
+  <!-- <view class='saySthView'> -->
+    <!-- 评论内容根据情况进行改变 -->
+    <!-- <input name="commentContent" class='saySth' placeholder='{{placeholder}}' confirm-type='send' bindconfirm='saveComment' focus="{{commentFocus}}" value='{{contentValue}}' data-replyCommentContent='{{replyCommentContent}}' data-replyToOpenId="{{replyToOpenId}}"
+      data-replyToNickName="{{replyToNickName}}"></input>
+  </view> -->
+  <view class="saySthView">
+    <view class='progress_box' bindtap='openRecording' style="display:{{openRecordingdis}}">
+      <view class="progress_bgs">
+        <view class="progress_bg">
+          <image class="progress_img" src='../../../../image/record.png'></image>
+        </view>
       </view>
-      </block>
-      <view wx:if="{{commentEnd}}" class="comment-end">---------无更多数据可加载---------</view>
-    </scroll-view>
-    <!-- </view> -->
-    <!-- 评论框 -->
-    <view class='saySthView'>
-      <!-- 评论内容根据情况进行改变 -->
-      <input name="commentContent" class='saySth' placeholder='{{placeholder}}' confirm-type='send' bindconfirm='saveComment' focus="{{commentFocus}}" value='{{contentValue}}'
-      data-replyCommentContent = '{{replyCommentContent}}'
-      data-replyToOpenId = "{{replyToOpenId}}"
-      data-replyToNickName = "{{replyToNickName}}"
-      ></input>
     </view>
-    
+
+    <view class='progress_box' bindtap='shutRecording' style="display:{{shutRecordingdis}}">
+      <view class="progress_bgs">
+        <view class="progress_bg">
+          <image class="progress_img" src='../../../../image/stop.png'></image>
+        </view>
+      </view>
+    </view>
+  </view>
+
 </wux-popup>

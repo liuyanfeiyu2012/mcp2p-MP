@@ -457,7 +457,7 @@ button[plain] {
   top: 50%;
   font-size: 33rpx;
   left: 0;
-  z-index: 9999;
+  z-index: 10002;
   margin: -370rpx 85rpx;
   background-color: #fff;
   border-radius: 11rpx;

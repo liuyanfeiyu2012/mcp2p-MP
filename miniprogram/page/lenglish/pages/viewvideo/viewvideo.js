@@ -2,10 +2,12 @@ import * as event from '../../../../util/event.js'
 import * as event2 from '../../../../util/event2.js'
 const sdk = require('../../../../vendor/rob-web-sdk/index.js')
 const md5util = require('../../../../util/md5.js')
+const utils = require('../../../../util/util.js')
 //获取应用实例
 const app = getApp()
 const windowHeight = wx.getSystemInfoSync().windowHeight
 const windowWidth = wx.getSystemInfoSync().windowWidth
+const recorderManager = wx.getRecorderManager();
 var start;
 
 Page({
@@ -38,40 +40,77 @@ Page({
 
     commentsList: [],
     commentVisible: false,
-    placeholder: '有爱评论，说点儿好听的~',
+    placeholder: '赞美一下小可爱吧~',
     replyCommentContent: null,
     replyToOpenId: null,
     replyToNickName: null,
     commentFocus: true,
     commentEnd: false,
-    displayDemo: true,
+
+    displayDemo: false,
+    showModal: false, // 卡片弹层
+
+
+    openRecordingdis: "block",//录音图片的不同
+    shutRecordingdis: "none",//录音图片的不同
+    recordingTimeqwe: 0,//录音计时
+    setInter: ""//录音名称
   },
+  //遮罩弹层
+  submit: function () {
+    this.setData({
+      showModal: true
+    })
+  },
+
+  preventTouchMove: function () {
+
+  },
+
+
+  go: function () {
+    this.setData({
+      showModal: false
+    })
+  },
+
   myevent: null,
   onLoad: function (options) {
 
-    // 处理首次使用引导页面的问题
-    let firstOpen = wx.getStorageSync("loadOpen")
-    console.log("是否首次打开本页面==", firstOpen)
-    if (firstOpen == undefined || firstOpen == '') { //根据缓存周期决定是否显示新手引导
-      console.log("首次打开本页面")
-      this.setData({
-        isTiptrue: true,
-        autoplay: false,
-        playState: false,
-      })
-    } else {
-      this.setData({
-        isTiptrue: false,
-        autoplay: true,
-      })
-    }
-
     //处理数据加载的问题
     var that = this;
-    var json_param = options.videoInfo
+    var json_param = JSON.parse(options.videoInfo)
     var share_param = options.shareInfo
     var current = options.current
     current = parseInt(current)
+    var that = this;
+    console.log(json_param)
+    // this.videos = [json_param]
+    this.setData({
+      videos: [json_param]
+    })
+    // wx.request({
+    //   url: 'https://www.mengchongp2p.online/app/video/list',
+    //   method: 'get',
+    //   header: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   success: function (res) {//这里写调用接口成功之后所运行的函数
+    //     console.log('res', res.data);//调出来的数据在控制台显示，方便查看
+    //     that.setData({
+    //       videos: res.data.result,
+    //       videoIndex: 0,
+    //       currentTranslateY: -0 * windowHeight,
+    //       mode: 'my',
+    //     })
+    //   },
+    //   fail: function (res) {//这里写调用接口失败之后所运行的函数
+    //     console.log('.........fail..........');
+    //   }
+    // })
+
+
+
     if (json_param) {
       var _videos = JSON.parse(json_param)
       console.log('_videos', _videos)
@@ -125,6 +164,12 @@ Page({
     }
 
   },
+  viewDemo(e) {
+    let demoindex = e.currentTarget.dataset.demoindex
+    wx.navigateTo({
+      url: '/page/lenglish/pages/demo/demo?index=' + demoindex,
+    })
+  },
   bindEvent() {
     // 滑动
     this.videoChange = throttle(this.touchEndHandler, 100)
@@ -137,7 +182,7 @@ Page({
 
     // 绑定updateVideoIndex事件，更新当前播放视频index
     this.myevent.on('updateVideoIndex', this, function (index) {
-      console.log('event updateVideoIndex:', index)
+      console.log('event updateVideoIndex1:', index)
       this.switchVideo(this.data.rowCurrent)
       setTimeout(() => {
         this.setData({
@@ -159,30 +204,30 @@ Page({
     })
 
     // 绑定updateVideoRIndex事件，横向更新当前播放视频
-    this.myevent.on('updateVideoRIndex', this, function (index) {
-      console.log('event updateVideoRIndex:', index)
-      let that = this
-      let rowIndex = this.data.rowCurrent
-      rowIndex += index
-      this.switchVideo(rowIndex)
-      setTimeout(() => {
-        that.setData({
-          animationShow: false,
-          showRowAnim: false,
-          //rzindex: -1,
-          playState: true,
-        }, () => {
-          setTimeout(() => {
-            that.vvideo.play()
-          }, 50)
-          setTimeout(() => {
-            this.setData({
-              rzindex: -1,
-            })
-          }, 150)
-        })
-      }, 490)
-    })
+    // this.myevent.on('updateVideoRIndex', this, function (index) {
+    //   console.log('event updateVideoRIndex2:', index)
+    //   let that = this
+    //   let rowIndex = this.data.rowCurrent
+    //   rowIndex += index
+    //   this.switchVideo(rowIndex)
+    //   setTimeout(() => {
+    //     that.setData({
+    //       animationShow: false,
+    //       showRowAnim: false,
+    //       //rzindex: -1,
+    //       playState: true,
+    //     }, () => {
+    //       setTimeout(() => {
+    //         that.vvideo.play()
+    //       }, 50)
+    //       setTimeout(() => {
+    //         this.setData({
+    //           rzindex: -1,
+    //         })
+    //       }, 150)
+    //     })
+    //   }, 490)
+    // })
   },
   loadData(status, callback) {
     var that = this
@@ -190,102 +235,103 @@ Page({
       console.log('我的视频数据暂时通过参数传递，所以不加载。')
       return
     }
-    sdk.listPidAv(function (res) {
-      let videoList = res.data
-      if (videoList) {
-        let ids = []
-        videoList.map(function (value, index) {
-          value = that.filterSubject(value)
-          ids.push(value['id'])
-        })
-        //同时获取用户信息
-        sdk.getUserByIds(ids, function (userList) {
 
-          videoList.map(function (value, index) {
-            if (userList) {
-              userList.map(function (value2, index2) {
-                if (value['id'] == value2['openid']) {
-                  value['userInfo'] = value2
-                }
-              })
-            }
-          })
+    // sdk.listPidAv(function (res) {
+    //   let videoList = res.data
+    //   if (videoList) {
+    //     let ids = []
+    //     videoList.map(function (value, index) {
+    //       value = that.filterSubject(value)
+    //       ids.push(value['id'])
+    //     })
+    //     //同时获取用户信息
+    //     sdk.getUserByIds(ids, function (userList) {
 
-          let newVideoList = that.data.videos
-          if (status == 0) {
-            newVideoList = []
-          }
-          that.setData({
-            videos: newVideoList.concat(videoList)
-          })
-          callback(that.data.videos)
+    //       videoList.map(function (value, index) {
+    //         if (userList) {
+    //           userList.map(function (value2, index2) {
+    //             if (value['id'] == value2['openid']) {
+    //               value['userInfo'] = value2
+    //             }
+    //           })
+    //         }
+    //       })
 
-        }, function (err) {
-          console.log('getUserByIds fail', err)
-          let newVideoList = that.data.videos
-          if (status == 0) {
-            newVideoList = []
-          }
-          that.setData({
-            videos: newVideoList.concat(videoList)
-          })
-          callback(that.data.videos)
-        })
-      }
+    //       let newVideoList = that.data.videos
+    //       if (status == 0) {
+    //         newVideoList = []
+    //       }
+    //       that.setData({
+    //         videos: newVideoList.concat(videoList)
+    //       })
+    //       callback(that.data.videos)
 
-    })
+    //     }, function (err) {
+    //       console.log('getUserByIds fail', err)
+    //       let newVideoList = that.data.videos
+    //       if (status == 0) {
+    //         newVideoList = []
+    //       }
+    //       that.setData({
+    //         videos: newVideoList.concat(videoList)
+    //       })
+    //       callback(that.data.videos)
+    //     })
+    //   }
+
+    // })
   },
-  goUser(e) {
-    let userid = e.currentTarget.dataset.openid
-    console.log('userid', userid)
-    if (!userid) {
-      return
-    }
-    sdk.getUserByIds([userid], function (userList) {
-      console.log('success', userList)
-      let _userInfo = null
-      userList.map(function (item, index) {
-        if (userid == item['openid']) {
-          _userInfo = item
-        }
-      })
-      if (_userInfo) {
-        wx.navigateTo({
-          url: '/page/lenglish/pages/mine/mine?userInfo=' + JSON.stringify(_userInfo),
-        })
-      }
-    }, function (err) {
-      console.log('getUserByIds fail', err)
-    })
-  },
-  goUserHome(e) {
-    //this.pauseVideo()
-    let userid = e.currentTarget.dataset.openid
-    console.log('userid', userid)
-    let videoList = this.data.videos
-    let findUserFlag = false
-    let params = null
-    videoList.map(function (value, index) {
-      console.log('openid', value['id'])
-      if (value['id'] == userid) {
-        params = JSON.stringify(value['userInfo'])
-        findUserFlag = true
-      }
-    })
-    if (findUserFlag) {
-      wx.navigateTo({
-        url: '/page/lenglish/pages/mine/mine?userInfo=' + params,
-      })
-    } else {
-      wx.showToast({
-        title: '没有找到用户!',
-        icon: 'loading'
-      })
-    }
-  },
+  // goUser(e) {
+  //   let userid = e.currentTarget.dataset.openid
+  //   console.log('userid', userid)
+  //   if (!userid) {
+  //     return
+  //   }
+  //   sdk.getUserByIds([userid], function (userList) {
+  //     console.log('success', userList)
+  //     let _userInfo = null
+  //     userList.map(function (item, index) {
+  //       if (userid == item['openid']) {
+  //         _userInfo = item
+  //       }
+  //     })
+  //     if (_userInfo) {
+  //       wx.navigateTo({
+  //         url: '/page/lenglish/pages/mine/mine?userInfo=' + JSON.stringify(_userInfo),
+  //       })
+  //     }
+  //   }, function (err) {
+  //     console.log('getUserByIds fail', err)
+  //   })
+  // },
+  // goUserHome(e) {
+  //   //this.pauseVideo()
+  //   let userid = e.currentTarget.dataset.openid
+  //   console.log('userid', userid)
+  //   let videoList = this.data.videos
+  //   let findUserFlag = false
+  //   let params = null
+  //   videoList.map(function (value, index) {
+  //     console.log('openid', value['id'])
+  //     if (value['id'] == userid) {
+  //       params = JSON.stringify(value['userInfo'])
+  //       findUserFlag = true
+  //     }
+  //   })
+  //   if (findUserFlag) {
+  //     wx.navigateTo({
+  //       url: '/page/lenglish/pages/mine/mine?userInfo=' + params,
+  //     })
+  //   } else {
+  //     wx.showToast({
+  //       title: '没有找到用户!',
+  //       icon: 'loading'
+  //     })
+  //   }
+  // },
   like: function (e) {
     // 验证用户信息
-    if (!app.globalData.hasLogin) {
+    if (!app.globalData.userInfo) {
       wx.showToast({
         title: '跳转登录页!',
         icon: 'loading'
@@ -294,23 +340,30 @@ Page({
     } else {
       var that = this
       var listVideo = that.data.videos
-      var subject = listVideo[that.data.videoIndex];
-      var id = md5util.hexMD5(subject['src'])
-      sdk.addLike(id, function (res) {
-        listVideo.map(function (value, index) {
-          if (index == that.data.videoIndex) {
-            value['like'] = true
-          }
-        })
-        that.setData({
-          videos: listVideo
-        })
+      wx.request({
+        url: 'https://www.mengchongp2p.online/app/rank/add',
+        data: {
+          ownerId: app.globalData.userInfo.openId,
+          videoId: that.data.videos[that.data.videoIndex].videoId
+        },
+        method: 'post',
+        success: function () {
+          listVideo.map(function (value, index) {
+            if (index == that.data.videoIndex) {
+              value['like'] = true
+              value['likeCount']++
+            }
+          })
+          that.setData({
+            videos: listVideo
+          })
+        }
       })
     }
   },
   unlike: function (e) {
     // 验证用户信息
-    if (!app.globalData.hasLogin) {
+    if (!app.globalData.userInfo) {
       wx.showToast({
         title: '跳转登录页!',
         icon: 'loading'
@@ -342,7 +395,7 @@ Page({
       commentsList: [],
     });
     this.commentPage = 1;
-    this.loadComment()
+    this.getCommentsList()
   },
   closeTalk: function (e) {
     this.setData({
@@ -417,33 +470,53 @@ Page({
     this.getCommentsList(this.commentPage)
   },
   getCommentsList: function (page) {
-    if (this.data.commentEnd) {
-      return
-    }
-    let video = this.data.videos[this.data.videoIndex]
-    let id = md5util.hexMD5(video['src'])
+    // if (this.data.commentEnd) {
+    //   return
+    // }
+    // let video = this.data.videos[this.data.videoIndex]
+    // let id = md5util.hexMD5(video['src'])
     let that = this
     wx.showLoading({
       title: '加载数据...',
     })
-    sdk.listComment(id, page, function (res) {
-      console.log('listComment', res)
-      if (res && res.length > 0) {
-        let _listComment = that.data.commentsList
-        if (_listComment) {
-          that.setData({
-            commentsList: _listComment.concat(res)
-          })
-        }
-        that.commentPage += 1
-      } else {
+    wx.request({
+      url: 'https://www.mengchongp2p.online/app/video/comment-list',
+      method: 'get',
+      header: {
+        'Content-Type': 'application/json'
+      },
+      data: {
+        videoId: that.data.videos[that.data.videoIndex].videoId
+      },
+      success: function (res) {//这里写调用接口成功之后所运行的函数
+        console.log(res.data);//调出来的数据在控制台显示，方便查看
+        wx.hideLoading();
         that.setData({
-          commentEnd: true,
+          commentsList: res.data.result
         })
+      },
+      fail: function (res) {//这里写调用接口失败之后所运行的函数
+        console.log('.........fail..........');
       }
-    }, function end(res) {
-      wx.hideLoading()
     })
+    // sdk.listComment(id, page, function (res) {
+    //   console.log('listComment', res)
+    //   if (res && res.length > 0) {
+    //     let _listComment = that.data.commentsList
+    //     if (_listComment) {
+    //       that.setData({
+    //         commentsList: _listComment.concat(res)
+    //       })
+    //     }
+    //     that.commentPage += 1
+    //   } else {
+    //     that.setData({
+    //       commentEnd: true,
+    //     })
+    //   }
+    // }, function end(res) {
+    //   wx.hideLoading()
+    // })
   },
   shareMe: function (e) {
     console.log('click share')
@@ -461,10 +534,15 @@ Page({
     }
   },
   apply() {
-    //this.pauseVideo()
-    wx.navigateTo({
-      url: '/page/lenglish/pages/add/add',
-    })
+    if (!app.globalData.userInfo) {
+      wx.showToast({
+        title: '跳转登录页!',
+        icon: 'loading'
+      })
+      this.goMy()
+    } else {
+      sdk.video2local(function (res) { console.log(res) }, null, app)
+    }
   },
   goHome() {
     wx.redirectTo({
@@ -475,6 +553,12 @@ Page({
     //this.pauseVideo()
     wx.navigateTo({
       url: '/page/lenglish/pages/mine/mine',
+    })
+  },
+  goRank() {
+    //this.pauseVideo()
+    wx.navigateTo({
+      url: '/page/lenglish/pages/rank/rank',
     })
   },
   bindplay() {
@@ -560,7 +644,7 @@ Page({
     }
     if (!this.data.displayDemo) {
       wx.setNavigationBarTitle({
-        title: "用户视频浏览",
+        title: "推荐视频",
       })
     }
   },
@@ -610,59 +694,41 @@ Page({
     let index = this.data.videoIndex
     this.getDirect(start, e.changedTouches[0], function () {
       console.log('left2right', that.data.rowCurrent)
-      let _rowCurrent = that.data.rowCurrent
-      if (_rowCurrent <= 0) {
-        wx.showToast({
-          title: '没有更多数据',
-          icon: 'loading',
-          duration: 500
-        })
-        return
-      }
-      that.setData({
-        animationShow: false,
-        rzindex: 9999,
-        showRowAnim: true
-      }, () => {
-        console.log('横向 切换')
-        that.create2Anim(-windowWidth * (_rowCurrent - 1)).then((res) => {
-          that.setData({
-            anim: that._animation.export(),
-          }, () => {
-            that.myevent.emit('updateVideoRIndex', -1)
-          })
-        })
-      })
+      // let _rowCurrent = that.data.rowCurrent
+      // if (_rowCurrent <= 0) {
+      //   wx.showToast({
+      //     title: '没有更多数据',
+      //     icon: 'loading',
+      //     duration: 500
+      //   })
+      //   return
+      // }
+      // that.setData({
+      //   animationShow: false,
+      //   rzindex: 9999,
+      //   showRowAnim: true
+      // }, () => {
+      //   console.log('横向 切换')
+      //   that.create2Anim(-windowWidth * (_rowCurrent - 1)).then((res) => {
+      //     that.setData({
+      //       anim: that._animation.export(),
+      //     }, () => {
+      //       that.myevent.emit('updateVideoRIndex', -1)
+      //     })
+      //   })
+      // })
       // that.switch2right()
-      
+
     }, function () {
       console.log('right2left', that.data.rowCurrent)
-      let _rowCurrent = that.data.rowCurrent
-      if (_rowCurrent >= 2) {
-        wx.showToast({
-          title: '没有更多数据',
-          icon: 'loading',
-          duration: 500
-        })
-        return
-      }
-      that.setData({
-        animationShow: false,
-        rzindex: 9999,
-        showRowAnim: true
-      }, () => {
-        console.log('横向 切换')
-        that.create2Anim(-windowWidth * (_rowCurrent + 1)).then((res) => {
-          that.setData({
-            anim: that._animation.export(),
-          }, () => {
-            that.myevent.emit('updateVideoRIndex', 1)
-          })
-        })
+      wx.navigateTo({
+        url: '/page/lenglish/pages/mine/mine',
       })
+
       //that.switch2left()
 
     }, function () {
+      console.log('top2bottom', that.data.rowCurrent)
       console.log('top2bottom', index)
       // 更早地设置 animationShow
       if (index !== 0) {
@@ -692,6 +758,7 @@ Page({
         })
       }
     }, function () {
+      console.log('bottom2top', that.data.rowCurrent)
       console.log('bottom2top')
       if (index !== (that.data.videos.length - 1)) {
         that.setData({
@@ -729,6 +796,7 @@ Page({
   },
   create2Anim(num) {
     this._animation.translateX(num).step()
+
     return Promise.resolve({
     })
   },
@@ -828,7 +896,146 @@ Page({
     })
     this.vvideo.play()
   },
+  upper(e) {
+    console.log('upper')
+    // wx.showToast({
+    //   title: '数据加载中！',
+    //   icon: 'none'
+    // })
+  },
+  lower(e) {
+    console.log('lower')
+    wx.showToast({
+      title: '数据加载中！',
+      icon: 'none',
+      duration: 1000
+    })
+  },
+  //录音计时器
+  recordingTimer: function () {
+    var that = this;
+    //将计时器赋值给setInter
+    that.data.setInter = setInterval(
+      function () {
+        var time = that.data.recordingTimeqwe + 1;
+        that.setData({
+          recordingTimeqwe: time
+        })
+      }
+      , 1000);
+  },
+  //开始录音
+  openRecording: function () {
+    var that = this;
+    if (!app.globalData.userInfo) {
+      wx.showToast({
+        title: '请先登录',
+        icon: 'loading'
+      })
+      this.goMy()
+    } else {
+      wx.getSystemInfo({
+        success: function (res) {
+          that.setData({
+            shutRecordingdis: "block",
+            openRecordingdis: "none"
+          })
+        }
+      })
+      const options = {
+        duration: 60000, //指定录音的时长，单位 ms，最大为10分钟（600000），默认为1分钟（60000）
+        sampleRate: 16000, //采样率
+        numberOfChannels: 1, //录音通道数
+        encodeBitRate: 96000, //编码码率
+        format: 'mp3', //音频格式，有效值 aac/mp3
+        frameSize: 50, //指定帧大小，单位 KB
+      }
+      //开始录音计时   
+      that.recordingTimer();
+      //开始录音
+      recorderManager.start(options);
+      recorderManager.onStart(() => {
+        wx.showToast({
+          title: '开始录音',
+          icon: 'success',
+          duration: 2000
+        })
+        wx.showToast({
+          title: '请说话',
+          icon: 'loading',
+        })
+      });
+      //错误回调
+      recorderManager.onError((res) => {
+        console.log(res);
+      })
+    }
 
+  },
+
+  //结束录音
+  shutRecording: function () {
+    var that = this;
+    wx.getSystemInfo({
+      success: function (res) {
+        that.setData({
+          shutRecordingdis: "none",
+          openRecordingdis: "block"
+        })
+      }
+    })
+    recorderManager.stop();
+    recorderManager.onStop((res) => {
+      wx.showToast({
+        title: '结束录音',
+        icon: 'success',
+        duration: 2000
+      })
+      wx.showToast({
+        title: '正在解析',
+        icon: 'loading',
+      })
+      const { tempFilePath } = res;
+      //结束录音计时  
+      clearInterval(that.data.setInter);
+      //上传录音
+      wx.uploadFile({
+        url: 'https://www.mengchongp2p.online/app/video/comment',//这是你自己后台的连接
+        filePath: tempFilePath,
+        name: "file",//后台要绑定的名称
+        header: {
+          "Content-Type": "multipart/form-data"
+        },
+        //参数绑定
+        formData: {
+          uid: app.globalData.userInfo.openId,
+          videoId: that.data.videos[that.data.videoIndex].videoId,
+          file: tempFilePath,
+        },
+        success: function (ress) {
+          console.log(res);
+          wx.hideLoading()
+          wx.showToast({
+            title: '解析完成',
+            icon: 'success',
+            duration: 2000
+          })
+          that.getCommentsList()
+        },
+        fail: function (ress) {
+          console.log("。。录音保存失败。。");
+        }
+      })
+    })
+  },
+
+  //录音播放
+  recordingAndPlaying: function (eve) {
+    wx.playBackgroundAudio({
+      //播放地址
+      dataUrl: '' + eve.currentTarget.dataset.gid + ''
+    })
+  },
 })
 function throttle(fn, delay) {
   var timer = null;

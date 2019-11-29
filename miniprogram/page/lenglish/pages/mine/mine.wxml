@@ -24,7 +24,7 @@
 
   <view class="video-wrap">
     <block wx:if="{{videoList.length > 0}}">
-      <view wx:for="{{videoList}}" wx:for-item="video" class="video-item" style="{{'background-image: url('+video.videoBgUri+');'}}" wx:key="video" bindtap='showVideo'>
+      <view wx:for="{{videoList}}" wx:for-item="video" class="video-item" style="{{'background-image: url('+video.videoBgUri+');'}}" wx:key="video" data-arrindex="{{index}}" bindtap='showVideo'>
       </view>
     </block>
     <block wx:else>
