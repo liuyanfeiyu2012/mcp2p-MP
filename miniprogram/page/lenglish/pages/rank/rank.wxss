@@ -51,3 +51,12 @@ page {
   display: flex;
   align-items: center;
 }
+
+.info-wrap .name {
+  font-size: 30rpx;
+  flex: 0 0 150rpx;
+}
+.info-wrap .score {
+  font-size: 30rpx;
+  color: #f14885
+}

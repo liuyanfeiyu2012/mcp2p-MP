@@ -11,8 +11,8 @@
 
       <view class="info-wrap">
         <image src="{{item.avatar}}" class="avatar"></image>
-        <text>{{item.wxName}}</text>
-        <view>{{item.likeCount}}</view>
+        <text class="name">{{item.wxName}}</text>
+        <view class="score">骨头数：{{item.score}}</view>
       </view>
     </view>
 

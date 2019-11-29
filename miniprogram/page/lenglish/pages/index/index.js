@@ -751,6 +751,8 @@ Page({
           icon: 'loading',
           duration: 500
         })
+        
+        
       }
     }, function () {
       console.log('bottom2top', that.data.rowCurrent)
@@ -781,10 +783,30 @@ Page({
           }
         })
       } else {
+        const windowHeight = wx.getSystemInfoSync().windowHeight
         wx.showToast({
           title: '没有更多数据',
           icon: 'loading',
           duration: 500
+        })
+        wx.request({
+          url: 'https://www.mengchongp2p.online/app/video/list',
+          method: 'get',
+          header: {
+            'Content-Type': 'application/json'
+          },
+          success: function (res) {//这里写调用接口成功之后所运行的函数
+            console.log('res', res.data);//调出来的数据在控制台显示，方便查看
+            that.setData({
+              videos: that.data.videos.concat(res.data.result),
+              videoIndex: res.data.result.length,
+              currentTranslateY: -res.data.result.length * windowHeight,
+              mode: 'my',
+            })
+          },
+          fail: function (res) {//这里写调用接口失败之后所运行的函数
+            console.log('.........fail..........');
+          }
         })
       }
     });
@@ -905,6 +927,7 @@ Page({
       icon: 'none',
       duration: 1000
     })
+   
   },
   //录音计时器
   recordingTimer: function () {

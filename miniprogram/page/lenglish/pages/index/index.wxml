@@ -44,8 +44,8 @@
       <image class="userinfo-avatar" catchtap="goUserHome" src="{{videos[videoIndex].userInfo.avatarUrl}}" data-openid="{{videos[videoIndex].userInfo.openid}}"></image>
     </view>
     <view class="btn-contain">
-      <image wx:if="{{videos[videoIndex].like}}" class="icon2 right-icon" src='/image/like_red.png' catchtap='unlike'>取消喜欢</image>
-      <image wx:if="{{!videos[videoIndex].like}}" class="icon2 right-icon" src='/image/like.png' catchtap='like'>喜欢</image>
+      <image wx:if="{{videos[videoIndex].likeCount > 0}}" class="icon2 right-icon" src='/image/like_red.png' catchtap='like'>喜欢</image>
+      <image wx:if="{{!videos[videoIndex].likeCount}}" class="icon2 right-icon" src='/image/like.png' catchtap='like'>喜欢</image>
       <view>{{videos[videoIndex].likeCount}}</view>
     </view>
     <view class="btn-contain">
