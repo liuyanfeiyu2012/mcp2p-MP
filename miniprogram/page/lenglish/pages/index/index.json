@@ -1,8 +1,8 @@
 {
   "navigationBarTitleText": "萌宠",
   "usingComponents": {
-    "wux-popup": "../../../dist/popup/index",
-    "wux-icon": "../../../dist/icon/index",
-    "wux-media": "../../../dist/media/index"
+    "wux-popup": "../../../../dist/popup/index",
+    "wux-icon": "../../../../dist/icon/index",
+    "wux-media": "../../../../dist/media/index"
   }
 }
