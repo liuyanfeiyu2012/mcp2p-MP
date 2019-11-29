@@ -17,9 +17,22 @@
       <image mode="aspectFill" class="animation-image" src="{{videos[videoIndex].videoBgUri}}"></image>
     </view>
   </view>
-  <view class="recommend-label" wx:if="{{videos[videoIndex].recommendProduct}}">
-    {{videos[videoIndex].recommendProduct}}
+  <!-- 遮罩弹层 -->
+  <view class="mask" catchtouchmove="preventTouchMove" wx:if="{{showModal}}"></view>
+  <view class="modalDlg" wx:if="{{showModal}}">
+    <view class="animal-name" wx:if="{{videos[videoIndex].animal}}">
+      {{"萌宠名称："}}{{videos[videoIndex].animal}}
+    </view>
+    <view class="animal-desc" wx:if="{{videos[videoIndex].description}}">
+      {{"萌宠描述："}}{{videos[videoIndex].description}}
+    </view>
+    <view class="animal-name" wx:if="{{videos[videoIndex].recommendProduct}}">
+      {{"推荐商品："}}{{videos[videoIndex].recommendProduct}}
+    </view>
+    <button bindtap="go">关闭</button>
   </view>
+ 
+  <button bindtap="submit" class="card-mask">卡片</button>
   <video class="vvideo" bindtimeupdate="bindtimeupdate" id="kdvideo" binderror="binderror" autoplay="{{true}}" hidden="{{false}}" objectFit="cover" src="{{videos[videoIndex].videoUri}}" bindplay="bindplay" controls="{{controls}}" loop="true" poster="{{videos[videoIndex].videoBgUri}}"
     enable-progress-gesture="{{false}}" show-progress="{{false}}">
     
@@ -111,7 +124,7 @@
             </view>
           </view>
           <view class='comments-replaycontent' wx:if="{{item.toCommentContent}}">{{item.toCommentContent}}</view>
-          <view class='comments-content'>{{item.context}}</view>
+          <view class='comments-content'>{{item.context}}<view class="sentiment">{{item.sentiment}}</view></view>
         </view>
 
       </view>

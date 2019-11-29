@@ -1,7 +1,29 @@
-.rank-wrap {
+/* .rank-wrap {
   background-color: #141414;
   height: 100%;
   color: #fff;
   position: absolute;
   width: 100%;
+} */
+
+page{
+  background-color: #eee;
+}
+.case-page{
+  padding:20rpx;
+}
+.list-masonry{
+  column-count: 2;
+  column-gap: 20rpx;
+}
+.item-masonry{
+  background-color: #fff;break-inside: avoid; box-sizing: border-box; padding: 20rpx;
+}
+.item-masonry image {
+  width: 100%;
+}
+.vvideo {
+  height: 40vh;
+  width: 40vw;
+  
 }

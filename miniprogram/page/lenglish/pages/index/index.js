@@ -48,12 +48,32 @@ Page({
     commentEnd: false,
 
     displayDemo: false,
+    showModal: false, // 卡片弹层
+
 
     openRecordingdis: "block",//录音图片的不同
     shutRecordingdis: "none",//录音图片的不同
     recordingTimeqwe: 0,//录音计时
     setInter: ""//录音名称
   },
+  //遮罩弹层
+  submit: function () {
+    this.setData({
+      showModal: true
+    })
+  },
+
+  preventTouchMove: function () {
+
+  },
+
+
+  go: function () {
+    this.setData({
+      showModal: false
+    })
+  },
+
   myevent: null,
   onLoad: function (options) {
 
@@ -71,7 +91,7 @@ Page({
         'Content-Type': 'application/json'
       },
       success: function (res) {//这里写调用接口成功之后所运行的函数
-        // console.log(res.data);//调出来的数据在控制台显示，方便查看
+        console.log('res',res.data);//调出来的数据在控制台显示，方便查看
         that.setData({
           videos: res.data.result,
           videoIndex: 0,

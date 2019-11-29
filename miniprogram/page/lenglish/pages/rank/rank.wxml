@@ -1,3 +1,14 @@
-<view class="rank-wrap">
-  <view wx:for="">111</view>
+<!-- <view class="rank-wrap">
+  <view >222</view>
+</view> -->
+<view class='case-page'>
+  <view class='list-masonry'>
+    <view class='item-masonry' wx:for="{{videoList}}">
+      <!-- <image src='{{item.videoBgUrl}}' mode='widthFix'></image> -->
+      <video class="vvideo" bindtimeupdate="bindtimeupdate" id="kdvideo" binderror="binderror" autoplay="{{true}}" hidden="{{false}}" objectFit="cover" src="{{item.videoUrl}}" bindplay="bindplay" controls="{{controls}}" loop="true" poster="{{item.videoBgUrl}}"
+    enable-progress-gesture="{{false}}" show-progress="{{false}}" >
+      </video>
+      <text>{{item.wxName}}</text>
+    </view>
+  </view>
 </view>
