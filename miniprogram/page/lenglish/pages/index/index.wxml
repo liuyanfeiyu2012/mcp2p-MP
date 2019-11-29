@@ -18,21 +18,22 @@
     </view>
   </view>
   <!-- 遮罩弹层 -->
-  <view class="mask" catchtouchmove="preventTouchMove" wx:if="{{showModal}}"></view>
-  <view class="modalDlg" wx:if="{{showModal}}">
-    <view class="animal-name" wx:if="{{videos[videoIndex].animal}}">
-      {{"萌宠名称："}}{{videos[videoIndex].animal}}
+  <block wx:if="{{videos[videoIndex].animal}}">
+    <view class="mask" catchtouchmove="preventTouchMove" wx:if="{{showModal}}"></view>
+    <view class="modalDlg" wx:if="{{showModal}}">
+      <view class="animal-name" wx:if="{{videos[videoIndex].animal}}">
+        {{"萌宠名称："}}{{videos[videoIndex].animal}}
+      </view>
+      <view class="animal-desc" wx:if="{{videos[videoIndex].description}}">
+        {{"萌宠描述："}}{{videos[videoIndex].description}}
+      </view>
+      <view class="animal-name" wx:if="{{videos[videoIndex].recommendProduct}}">
+        {{"推荐商品："}}{{videos[videoIndex].recommendProduct}}
+      </view>
+      <button bindtap="go" class="close-info">关闭</button>
     </view>
-    <view class="animal-desc" wx:if="{{videos[videoIndex].description}}">
-      {{"萌宠描述："}}{{videos[videoIndex].description}}
-    </view>
-    <view class="animal-name" wx:if="{{videos[videoIndex].recommendProduct}}">
-      {{"推荐商品："}}{{videos[videoIndex].recommendProduct}}
-    </view>
-    <button bindtap="go">关闭</button>
-  </view>
- 
-  <button bindtap="submit" class="card-mask">卡片</button>
+    <button bindtap="submit" class="card-mask">撸一下</button>
+  </block>
   <video class="vvideo" bindtimeupdate="bindtimeupdate" id="kdvideo" binderror="binderror" autoplay="{{true}}" hidden="{{false}}" objectFit="cover" src="{{videos[videoIndex].videoUri}}" bindplay="bindplay" controls="{{controls}}" loop="true" poster="{{videos[videoIndex].videoBgUri}}"
     enable-progress-gesture="{{false}}" show-progress="{{false}}">
     

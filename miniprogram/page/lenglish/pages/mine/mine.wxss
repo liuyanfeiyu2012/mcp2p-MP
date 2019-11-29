@@ -133,10 +133,10 @@ page {
 }
 
 .info-item {
-  flex: 1;
   height: 80rpx;
   font-size: 26rpx;
   color: #cccaca;
+  flex: 0 0 200rpx;
 }
 
 .info-item .num {
@@ -171,4 +171,10 @@ page {
   text-align: center;
   align-items: center;
   justify-content: center;
+}
+.no-data {
+  width: 100%;
+  text-align: center;
+  margin-top: 20rpx;
+  color: #cccaca;
 }

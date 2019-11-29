@@ -18,13 +18,18 @@
       <text class="num">12</text>粉丝
     </view> -->
     <view class="info-item">
-      <text class="num">{{likeCountTotal}}</text>骨头
+      <text class="num">{{likeCountTotal || '0'}}</text>骨头
     </view>
   </view>
 
   <view class="video-wrap">
-    <view wx:for="{{videoList}}" wx:for-item="video" class="video-item" style="{{'background-image: url('+video.videoBgUri+');'}}" wx:key="video" bindtap='showVideo'>
-    </view>
+    <block wx:if="{{videoList.length > 0}}">
+      <view wx:for="{{videoList}}" wx:for-item="video" class="video-item" style="{{'background-image: url('+video.videoBgUri+');'}}" wx:key="video" bindtap='showVideo'>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="no-data">还没有上传视频</view>
+    </block>
   </view>
 
 
