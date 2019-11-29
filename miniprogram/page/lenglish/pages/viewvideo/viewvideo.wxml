@@ -19,9 +19,6 @@
       </view>
   </view>
   <video class="vvideo" bindtimeupdate="bindtimeupdate" id="kdvideo" binderror="binderror" autoplay="{{autoplay}}" hidden="{{false}}" objectFit="cover" src="{{videos[videoIndex].src}}" bindplay="bindplay" controls="{{controls}}" loop="true" poster="{{videos[videoIndex].poster}}" enable-progress-gesture="{{false}}" show-progress="{{false}}">
-  <cover-view wx:if='{{rowCurrent == 0}}' class="lang-version" style="z-index:9998;">原声版</cover-view>
-  <cover-view wx:if='{{rowCurrent == 1}}' class="lang-version" style="z-index:9998;">配音版</cover-view>
-  <cover-view wx:if='{{rowCurrent == 2}}' class="lang-version" style="z-index:9998;">中英版</cover-view>
   </video>
   <!-- 右侧区域  -->
   <view class="tools">
@@ -43,7 +40,7 @@
   <progress class="progress" percent="{{percent}}" activeColor="#ffffff" backgroundColor="#A9A9A9" stroke-width="1"  wx:if="{{true}}" style="z-index:10000;"/>
 
   <!-- 底部 -->
-  <view class="footer" style="z-index:10000;" wx:if="{{mode == 'index'}}">
+  <!-- <view class="footer" style="z-index:10000;" wx:if="{{mode == 'index'}}">
     <view class='home' bindtap="goHome">
       <view>刷新</view>
     </view>
@@ -53,35 +50,8 @@
     <view class='me' bindtap="goMy">
       <view>我的</view>
     </view>
-  </view>
+  </view> -->
 </view>
-
-<view class='page-guide' wx:if="{{isTiptrue}}">
-  <view class="page-guide-wrp" style="height: 100%;flex-direction:column;">
-    <view style="height: 40%; ">
-      <view style="height: 100%;flex-direction:column; display:flex; align-items: center;justify-content: center;">
-          <view>
-            <image src="/image/toleft2.png"  style="width:204rpx;height:218rpx;"></image>
-          </view>
-          <view class="page-guide-text1">
-            向左滑动切换不同语种视频
-          </view>
-      </view>
-    </view>
-    <view style="height: 60%;">
-      <view style="height: 100%;flex-direction:column;display:flex; align-items: center;">
-          <view>
-            <image src="/image/totop2.png" style="width:218rpx;height:204rpx;"></image>
-          </view>
-          <view class="page-guide-text1">
-            向上滑动切换不同视频
-          </view>
-          <view class='page-guide-bottom' bindtap='closeThis'>记住了  我去试试</view>
-      </view>
-    </view>
-  </view>
-</view>
-
 
 <wux-popup position="bottom" visible="{{ commentVisible }}" bind:close="onClose2">
     
