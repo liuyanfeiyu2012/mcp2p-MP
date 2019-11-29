@@ -17,11 +17,12 @@
       <image mode="aspectFill" class="animation-image" src="{{videos[videoIndex].videoBgUri}}"></image>
     </view>
   </view>
+  <view class="recommend-label" wx:if="{{videos[videoIndex].recommendProduct}}">
+    {{videos[videoIndex].recommendProduct}}
+  </view>
   <video class="vvideo" bindtimeupdate="bindtimeupdate" id="kdvideo" binderror="binderror" autoplay="{{true}}" hidden="{{false}}" objectFit="cover" src="{{videos[videoIndex].videoUri}}" bindplay="bindplay" controls="{{controls}}" loop="true" poster="{{videos[videoIndex].videoBgUri}}"
     enable-progress-gesture="{{false}}" show-progress="{{false}}">
-    <!-- <cover-view wx:if='{{rowCurrent == 0}}' class="lang-version" style="z-index:9998;">原声版</cover-view>
-  <cover-view wx:if='{{rowCurrent == 1}}' class="lang-version" style="z-index:9998;">配音版</cover-view>
-  <cover-view wx:if='{{rowCurrent == 2}}' class="lang-version" style="z-index:9998;">中英版</cover-view> -->
+    
   </video>
   <!-- 右侧区域  -->
   <view class="tools">
@@ -34,7 +35,7 @@
       <view>{{videos[videoIndex].likeCount}}</view>
     </view>
     <view class="btn-contain">
-      <image class="icon2 right-icon" src='/image/talk.png' catchtap='talk'>评论</image>
+      <image class="icon2 right-icon" src='/image/talk.png' catchtap='talk' >评论</image>
       <view>{{videos[videoIndex].commentList.length}}</view>
     </view>
     <view class="btn-contain">
@@ -84,8 +85,8 @@
     </view>
   </view>
   <!-- <view class='comments-all'  > -->
-  <scroll-view scroll-y class='comments-all' bindscrolltolower="loadComment">
-    <block wx:for="{{commentsList}}" wx:key="">
+  <scroll-view scroll-y class='comments-all'>
+    <block wx:for="{{commentsList}}" wx:key="" wx:for-index="idx" wx:if="{{commentsList.length > 0}}">
       <view class="comments-items">
         <view class='comments-item' bindtap='replyFocus' data-fatherCommentContent="{{item.comment}}" data-toUserId="{{item.openid}}" data-toNickName="{{item.nickname}}">
           <!-- 用户留言回复功能  data-:绑定数据方便获取，
@@ -94,7 +95,9 @@
       toNickName：回复那个人的名字
       -->
           <view class="container-comments">
+            <view class="face-wrap">
             <image class='face-comments' src='{{item.avatar}}' catchtap="goUser" data-openid='{{item.openid}}'></image>
+            </view>
             <view class='nickname-comments'>
               <label class='nickname-lbl'>@{{item.userName}}</label>
               <!-- 留言： -->
@@ -113,7 +116,7 @@
 
       </view>
     </block>
-    <view wx:if="{{commentEnd}}" class="comment-end">---------无更多数据可加载---------</view>
+    <view wx:if="{{commentsList.length === 0}}" class="comment-end">---------没有数据---------</view>
   </scroll-view>
   <!-- </view> -->
   <!-- 评论框 -->
@@ -122,19 +125,20 @@
     <!-- <input name="commentContent" class='saySth' placeholder='{{placeholder}}' confirm-type='send' bindconfirm='saveComment' focus="{{commentFocus}}" value='{{contentValue}}' data-replyCommentContent='{{replyCommentContent}}' data-replyToOpenId="{{replyToOpenId}}"
       data-replyToNickName="{{replyToNickName}}"></input>
   </view> -->
-
-  <view class='progress_box' bindtap='openRecording' style="display:{{openRecordingdis}}">
-    <view class="progress_bgs">
-      <view class="progress_bg">
-        <image class="progress_img" src='../../../../image/record.png'></image>
+  <view class="saySthView">
+    <view class='progress_box' bindtap='openRecording' style="display:{{openRecordingdis}}">
+      <view class="progress_bgs">
+        <view class="progress_bg">
+          <image class="progress_img" src='../../../../image/record.png'></image>
+        </view>
       </view>
     </view>
-  </view>
 
-  <view class='progress_box' bindtap='shutRecording' style="display:{{shutRecordingdis}}">
-    <view class="progress_bgs">
-      <view class="progress_bg">
-        <image class="progress_img" src='../../../../image/stop.png'></image>
+    <view class='progress_box' bindtap='shutRecording' style="display:{{shutRecordingdis}}">
+      <view class="progress_bgs">
+        <view class="progress_bg">
+          <image class="progress_img" src='../../../../image/stop.png'></image>
+        </view>
       </view>
     </view>
   </view>

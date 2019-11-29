@@ -306,7 +306,7 @@ Page({
   // },
   like: function (e) {
     // 验证用户信息
-    if (!app.globalData.hasLogin) {
+    if (!app.globalData.userInfo) {
       wx.showToast({
         title: '跳转登录页!',
         icon: 'loading'
@@ -315,23 +315,30 @@ Page({
     } else {
       var that = this
       var listVideo = that.data.videos
-      var subject = listVideo[that.data.videoIndex];
-      var id = md5util.hexMD5(subject['src'])
-      sdk.addLike(id, function (res) {
-        listVideo.map(function (value, index) {
-          if (index == that.data.videoIndex) {
-            value['like'] = true
-          }
-        })
-        that.setData({
-          videos: listVideo
-        })
+      wx.request({
+        url: 'https://www.mengchongp2p.online/app/rank/add',
+        data: {
+          ownerId: app.globalData.userInfo.openId,
+          videoId: that.data.videos[that.data.videoIndex].videoId
+        },
+        method: 'post',
+        success: function() {
+          listVideo.map(function (value, index) {
+            if (index == that.data.videoIndex) {
+              value['like'] = true
+              value['likeCount']++
+            }
+          })
+          that.setData({
+            videos: listVideo
+          })
+        }
       })
     }
   },
   unlike: function (e) {
     // 验证用户信息
-    if (!app.globalData.hasLogin) {
+    if (!app.globalData.userInfo) {
       wx.showToast({
         title: '跳转登录页!',
         icon: 'loading'
@@ -363,6 +370,7 @@ Page({
       commentsList: [],
     });
     this.commentPage = 1;
+    this.getCommentsList()
   },
   closeTalk: function (e) {
     this.setData({
@@ -453,10 +461,11 @@ Page({
         'Content-Type': 'application/json'
       },
       data: {
-        videoId: '45944c88-8894-4046-a95f-5dfeefff53c5'
+        videoId: that.data.videos[that.data.videoIndex].videoId
       },
       success: function (res) {//这里写调用接口成功之后所运行的函数
         console.log(res.data);//调出来的数据在控制台显示，方便查看
+        wx.hideLoading();
         that.setData({
           commentsList: res.data.result
         })
@@ -500,7 +509,15 @@ Page({
     }
   },
   apply() {
-    sdk.video2local(function(res){console.log(res)}, null, app)
+    if (!app.globalData.userInfo) {
+      wx.showToast({
+        title: '跳转登录页!',
+        icon: 'loading'
+      })
+      this.goMy()
+    } else {
+      sdk.video2local(function (res) { console.log(res) }, null, app)
+    }
   },
   goHome() {
     wx.redirectTo({
@@ -885,39 +902,50 @@ Page({
   //开始录音
   openRecording: function () {
     var that = this;
-    wx.getSystemInfo({
-      success: function (res) {
-        that.setData({
-          shutRecordingdis: "block",
-          openRecordingdis: "none"
-        })
-      }
-    })
-    const options = {
-      duration: 60000, //指定录音的时长，单位 ms，最大为10分钟（600000），默认为1分钟（60000）
-      sampleRate: 16000, //采样率
-      numberOfChannels: 1, //录音通道数
-      encodeBitRate: 96000, //编码码率
-      format: 'mp3', //音频格式，有效值 aac/mp3
-      frameSize: 50, //指定帧大小，单位 KB
-    }
-    //开始录音计时   
-    that.recordingTimer();
-    //开始录音
-    recorderManager.start(options);
-    recorderManager.onStart(() => {
-      this.loadComment()
-
+    if (!app.globalData.userInfo) {
       wx.showToast({
-        title: '开始录音',
-        icon: 'success',
-        duration: 2000
+        title: '请先登录',
+        icon: 'loading'
       })
-    });
-    //错误回调
-    recorderManager.onError((res) => {
-      console.log(res);
-    })
+      this.goMy()
+    } else {
+      wx.getSystemInfo({
+        success: function (res) {
+          that.setData({
+            shutRecordingdis: "block",
+            openRecordingdis: "none"
+          })
+        }
+      })
+      const options = {
+        duration: 60000, //指定录音的时长，单位 ms，最大为10分钟（600000），默认为1分钟（60000）
+        sampleRate: 16000, //采样率
+        numberOfChannels: 1, //录音通道数
+        encodeBitRate: 96000, //编码码率
+        format: 'mp3', //音频格式，有效值 aac/mp3
+        frameSize: 50, //指定帧大小，单位 KB
+      }
+      //开始录音计时   
+      that.recordingTimer();
+      //开始录音
+      recorderManager.start(options);
+      recorderManager.onStart(() => {
+        wx.showToast({
+          title: '开始录音',
+          icon: 'success',
+          duration: 2000
+        })
+        wx.showToast({
+          title: '请说话',
+          icon: 'loading',
+        })
+      });
+      //错误回调
+      recorderManager.onError((res) => {
+        console.log(res);
+      })
+    }
+
   },
 
   //结束录音
@@ -938,6 +966,10 @@ Page({
         icon: 'success',
         duration: 2000
       })
+      wx.showToast({
+        title: '正在解析',
+        icon: 'loading',
+      })
       const { tempFilePath } = res;
       //结束录音计时  
       clearInterval(that.data.setInter);
@@ -951,17 +983,19 @@ Page({
         },
         //参数绑定
         formData: {
-          uid: "640a6729bffd6e4eb3efd8a42946579a",
-          videoId: '45944c88-8894-4046-a95f-5dfeefff53c5',
+          uid: app.globalData.userInfo.openId,
+          videoId: that.data.videos[that.data.videoIndex].videoId,
           file: tempFilePath,
         },
         success: function (ress) {
           console.log(res);
+          wx.hideLoading()
           wx.showToast({
-            title: '保存完成',
+            title: '解析完成',
             icon: 'success',
             duration: 2000
           })
+          that.getCommentsList()
         },
         fail: function (ress) {
           console.log("。。录音保存失败。。");
