@@ -12,7 +12,7 @@
       <view class="info-wrap">
         <image src="{{item.avatar}}" class="avatar"></image>
         <text class="name">{{item.wxName}}</text>
-        <view class="score">骨头数：{{item.score}}</view>
+        <view class="score">投食数：{{item.score}}</view>
       </view>
     </view>
 

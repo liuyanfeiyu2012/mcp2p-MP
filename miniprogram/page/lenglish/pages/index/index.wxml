@@ -34,9 +34,13 @@
     </view>
     <button bindtap="submit" class="card-mask">撸一下</button>
   </block>
+  <!-- <view class="info-wrap">
+    <image src="{{videos[videoIndex].avatar}}" class="avatar"></image>
+    <text class="name">{{videos[videoIndex].wxName}}</text>
+  </view> -->
   <video class="vvideo" bindtimeupdate="bindtimeupdate" id="kdvideo" binderror="binderror" autoplay="{{true}}" hidden="{{false}}" objectFit="cover" src="{{videos[videoIndex].videoUri}}" bindplay="bindplay" controls="{{controls}}" loop="true" poster="{{videos[videoIndex].videoBgUri}}"
     enable-progress-gesture="{{false}}" show-progress="{{false}}">
-    
+
   </video>
   <!-- 右侧区域  -->
   <view class="tools">
@@ -49,7 +53,7 @@
       <view>{{videos[videoIndex].likeCount}}</view>
     </view>
     <view class="btn-contain">
-      <image class="icon2 right-icon" src='/image/talk.png' catchtap='talk' >评论</image>
+      <image class="icon2 right-icon" src='/image/talk.png' catchtap='talk'>评论</image>
       <view>{{videos[videoIndex].commentList.length}}</view>
     </view>
     <view class="btn-contain">
@@ -109,7 +113,7 @@
       -->
           <view class="container-comments">
             <view class="face-wrap">
-            <image class='face-comments' src='{{item.avatar}}' catchtap="goUser" data-openid='{{item.openid}}'></image>
+              <image class='face-comments' src='{{item.avatar}}' catchtap="goUser" data-openid='{{item.openid}}'></image>
             </view>
             <view class='nickname-comments'>
               <label class='nickname-lbl'>@{{item.userName}}</label>
@@ -124,7 +128,9 @@
             </view>
           </view>
           <view class='comments-replaycontent' wx:if="{{item.toCommentContent}}">{{item.toCommentContent}}</view>
-          <view class='comments-content'>{{item.context}}<view class="sentiment">{{item.sentiment}}</view></view>
+          <view class='comments-content'>{{item.context}}
+            <view class="sentiment">{{item.sentiment}}</view>
+          </view>
         </view>
 
       </view>
@@ -134,8 +140,8 @@
   <!-- </view> -->
   <!-- 评论框 -->
   <!-- <view class='saySthView'> -->
-    <!-- 评论内容根据情况进行改变 -->
-    <!-- <input name="commentContent" class='saySth' placeholder='{{placeholder}}' confirm-type='send' bindconfirm='saveComment' focus="{{commentFocus}}" value='{{contentValue}}' data-replyCommentContent='{{replyCommentContent}}' data-replyToOpenId="{{replyToOpenId}}"
+  <!-- 评论内容根据情况进行改变 -->
+  <!-- <input name="commentContent" class='saySth' placeholder='{{placeholder}}' confirm-type='send' bindconfirm='saveComment' focus="{{commentFocus}}" value='{{contentValue}}' data-replyCommentContent='{{replyCommentContent}}' data-replyToOpenId="{{replyToOpenId}}"
       data-replyToNickName="{{replyToNickName}}"></input>
   </view> -->
   <view class="saySthView">

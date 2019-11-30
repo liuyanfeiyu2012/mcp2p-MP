@@ -249,7 +249,6 @@ button[plain] {
 .sentiment {
   text-align: right;
   margin-left: 90rpx;
-  border-bottom: solid 2rpx #232323;
   background-color: #141414;
   font-size: 9pt;
 }
