@@ -6,7 +6,9 @@
     "page/lenglish/pages/editsrt/editsrt",
     "page/lenglish/pages/mine/mine",
     "page/lenglish/pages/viewvideo/viewvideo",
-    "page/lenglish/pages/rank/rank"
+    "page/lenglish/pages/rank/rank",
+    "page/lenglish/pages/advertising/advertising",
+    "page/lenglish/pages/circle/circle"
   ],
   "window": {
     "navigationBarTextStyle": "black",

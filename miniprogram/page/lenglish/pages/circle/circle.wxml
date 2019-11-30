@@ -1,0 +1,9 @@
+<!--miniprogram/page/lenglish/pages/circle/circle.wxml-->
+<!-- <text>miniprogram/page/lenglish/pages/circle/circle.wxml</text> -->
+<view class="circle-wrap">
+  <block class="c-top">
+    <button class="circle-button c-beijing" bindtap="goHome" wx:for="{{list}}">{{item.city}}</button>
+    <!-- <button class="circle-button c-shanghai" bindtap="goHome">上海</button> -->
+    <!-- <button class="circle-button c-shenzhen" bindtap="goHome">深圳</button> -->
+  </block>
+</view>

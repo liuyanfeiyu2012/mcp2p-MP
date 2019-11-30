@@ -100,7 +100,8 @@ Page({
       data: {
         "avatar": userInfo.avatarUrl,
         "openId": md5util.hexMD5(userInfo.nickName),
-        "wxName": userInfo.nickName
+        "wxName": userInfo.nickName,
+        'city': '唐镇'
       },
       success: function (res) { //这里写调用接口成功之后所运行的函数
         self.loadList(md5util.hexMD5(userInfo.nickName))

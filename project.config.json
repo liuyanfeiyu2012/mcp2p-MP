@@ -46,6 +46,10 @@
 			"currentL": -1,
 			"list": []
 		},
+		"gamePlugin": {
+			"current": -1,
+			"list": []
+		},
 		"miniprogram": {
 			"current": 7,
 			"list": [
@@ -102,6 +106,27 @@
 					"id": -1,
 					"name": "page/lenglish/pages/add/add",
 					"pathName": "page/lenglish/pages/add/add",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "page/lenglish/pages/advertising/advertising",
+					"pathName": "page/lenglish/pages/advertising/advertising",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "page/lenglish/pages/index/index",
+					"pathName": "page/lenglish/pages/index/index",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "圈子",
+					"pathName": "page/lenglish/pages/circle/circle",
 					"scene": null
 				}
 			]

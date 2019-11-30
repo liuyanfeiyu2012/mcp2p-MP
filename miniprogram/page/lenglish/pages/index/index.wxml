@@ -79,14 +79,14 @@
       首页
     </view>
     <view class="nav-item" catchtap="goRank">
-      日榜
+      排行
     </view>
     <view class="nav-item" catchtap='apply'>
       <view class="add">+</view>
     </view>
     <!-- <image class="icon" src='/image/add.png' catchtap='apply'></image> -->
-    <view class="nav-item" catchtap="goRank">
-      月榜
+    <view class="nav-item" catchtap="goCircle">
+      圈子
     </view>
     <view class="nav-item" catchtap="goMy">
       我的
@@ -163,3 +163,10 @@
   </view>
 
 </wux-popup>
+<view class='advertising-main' wx:if="{{advertisingShow}}">
+<view class='adv1'>
+  <image src='../../../../image/advertising.jpeg' class='adv-img'></image>
+  <text class='adv-time'>{{second}}</text>
+  <!-- <button>立即体验</button> -->
+</view>
+</view>

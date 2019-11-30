@@ -54,7 +54,8 @@ Page({
     openRecordingdis: "block",//录音图片的不同
     shutRecordingdis: "none",//录音图片的不同
     recordingTimeqwe: 0,//录音计时
-    setInter: ""//录音名称
+    setInter: "",//录音名称
+    likeChecked: true
   },
   //遮罩弹层
   submit: function () {
@@ -331,6 +332,8 @@ Page({
   // },
   like: function (e) {
     // 验证用户信息
+    // console.log('111')
+    // console.log('111',this.likeChecked)
     if (!app.globalData.userInfo) {
       wx.showToast({
         title: '跳转登录页!',
@@ -354,12 +357,18 @@ Page({
               value['likeCount']++
             }
           })
+
           that.setData({
-            videos: listVideo
+            videos: listVideo,
+            likeChecked: true
           })
         }
       })
+      // this.setData({
+      //   likeChecked: false
+      // })
     }
+
   },
   unlike: function (e) {
     // 验证用户信息

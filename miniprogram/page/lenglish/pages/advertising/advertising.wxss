@@ -1,0 +1,36 @@
+/* miniprogram/page/lenglish/pages/advertising/advertising.wxss */
+.adv1{
+  width: 100%;
+  height: 900rpx;
+  background: url('/img/ba3.png') no-repaeat 0 0;
+  background-size: contain;
+  position: relative;
+}
+.adv-img{
+  width: 100%;
+  height: 100vh;
+  position: absolute;
+}
+.tiaoguo{
+  font-size: 25rpx;
+  background-color: wheat;
+  border-radius: 80rpx;
+  display: inline-block;
+  margin-left: 10rpx;
+  position: absolute;
+  z-index: 999;
+  right: 25rpx;
+  top: 50rpx;
+  padding-left: 10rpx;
+  padding-right: 10rpx;
+}
+button{
+    border-radius: 18rpx;
+    width: 220rpx;
+    background-color: #fff;
+    color: #8B5742;
+    margin-top: 38rpx;
+    font-size: 33rpx;
+    position: absolute;
+    bottom: 50rpx;
+}

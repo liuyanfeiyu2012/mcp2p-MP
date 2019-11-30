@@ -54,7 +54,11 @@ Page({
     openRecordingdis: "block",//录音图片的不同
     shutRecordingdis: "none",//录音图片的不同
     recordingTimeqwe: 0,//录音计时
-    setInter: ""//录音名称
+    setInter: "",//录音名称
+
+    advertisingShow: true, // 刚进入时广告默认展示
+    second: 3,
+    advTimer: ''
   },
   //遮罩弹层
   submit: function () {
@@ -158,6 +162,19 @@ Page({
       that.bindEvent()
     }
 
+    // 进入时广告页
+    var that = this;
+    this.advTimer = setInterval(function () {
+      that.setData({
+        second: that.data.second - 1
+      })
+      if (that.data.second == 0) {
+        that.setData({
+          advertisingShow: false
+        })
+        clearInterval(this.time);
+      }
+    }, 1000)
   },
   viewDemo(e) {
     let demoindex = e.currentTarget.dataset.demoindex
@@ -554,6 +571,12 @@ Page({
     //this.pauseVideo()
     wx.navigateTo({
       url: '/page/lenglish/pages/rank/rank',
+    })
+  },
+  goCircle() {
+    //this.pauseVideo()
+    wx.navigateTo({
+      url: '/page/lenglish/pages/circle/circle',
     })
   },
   bindplay() {

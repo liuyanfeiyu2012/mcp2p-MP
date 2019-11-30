@@ -1,0 +1,30 @@
+/* miniprogram/page/lenglish/pages/circle/circle.wxss */
+.circle-wrap {
+  width: 100vw;
+  height: 100vh;
+  color: #8b8e8c;
+  background-color: hsl(0, 0%, 8%);
+}
+.c-top{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.circle-button{
+  width: 30%;
+  height: 60px;
+  line-height: 60px;
+  flex: 1;
+  display: inline-block;
+  margin: 15px 1.5%;
+  color: #fff;
+}
+.c-beijing {
+  background-color: #ffb733;
+}
+.c-shanghai {
+  background-color: #ef6565;
+}
+.c-shenzhen {
+  background-color: #d895fb;
+}
